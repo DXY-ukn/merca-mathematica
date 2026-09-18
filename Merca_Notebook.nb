@@ -1,0 +1,3677 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Wolfram 14.2' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       154,          7]
+NotebookDataLength[    154237,       3667]
+NotebookOptionsPosition[    151245,       3608]
+NotebookOutlinePosition[    152043,       3636]
+CellTagsIndexPosition[    151934,       3630]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["Full-Manuscript Mathematica Verification for the Manuscript", "Title",
+ CellChangeTimes->{{3.996305946225683*^9, 
+  3.996305972622505*^9}},ExpressionUUID->"29699e8d-3591-4746-b643-\
+7cd03fafd784"],
+
+Cell["", "Subtitle",
+ CellChangeTimes->{
+  3.9983854056068897`*^9},ExpressionUUID->"0c41fc14-265e-7e4c-87ad-\
+f7f3de20fe3f"],
+
+Cell["\<\
+This self-contained notebook reads no external .wl file. Choose Evaluation > \
+Evaluate Notebook to run all four groups in order and generate the detailed \
+report, summary table and PDF. The default example is (r,s,k)=(12,1,1).\
+\>", "Text",ExpressionUUID->"e538200a-a48a-584f-ac16-a6a9216b679c"],
+
+Cell[CellGroupData[{
+
+Cell["1. Chapters 2-3: periodic bounds and the root-of-unity sum", "Section",ExpressionUUID->"ae00f114-689c-8b41-b633-3901b29c2b14"],
+
+Cell["\<\
+P4, PEven and POdd implement P_3, P_{2,s} and P_{2,r-s}. EpsilonMin and \
+EpsilonMax are theoretical lower and upper bounds for the periodic term, not \
+its exact extrema. The root-of-unity formula is also checked numerically.\
+\>", "Text",ExpressionUUID->"dfbff8c1-cb4e-7748-8651-d96ad5d2ed9a"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"ClearAll", "[", "\n", "  ", 
+    RowBox[{
+    "PairwiseCoprimeQ", ",", " ", "RestrictedPartitionCounts", ",", "\n", 
+     "  ", "P4", ",", " ", "PEven", ",", " ", "POdd", ",", " ", 
+     "PrincipalConstant", ",", " ", "GeneralResidueEnvelope", ",", " ", 
+     "TValues", ",", "\n", "  ", "FullBlockSum", ",", " ", "LowerExpressions",
+      ",", " ", "QuadraticVertexValue", ",", "\n", "  ", 
+     "FourTestValuesAtBlock", ",", " ", "TripleTestValuesAtBlock", ",", "\n", 
+     "  ", "LagrangePolynomial", ",", " ", "ExactTestPolynomials", ",", "\n", 
+     "  ", "FourTestPolynomials", ",", " ", "TripleTestPolynomials", ",", 
+     "\n", "  ", "LargestNonnegativeRootCeiling", ",", " ", "SafeThreshold", ",",
+      "\n", "  ", "MercaFourSystem", ",", " ", "MercaTripleSystem", ",", " ", 
+     "MercaBoundarySystem", ",", " ", "MercaSystem", ",", "\n", "  ", 
+     "TransformedCoefficients", ",", " ", "FiniteNegativeData", ",", "\n", 
+     "  ", "MinorDelta", ",", " ", "MinorEta", ",", " ", "MinorRemainder", ",",
+      "\n", "  ", "MercaAnalyticScales", ",", " ", "ConvolutionConstant", ",",
+      "\n", "  ", "IntervalAbsUpper", ",", " ", "OutwardUpper", ",", " ", 
+     "ZetaRectangleUpper", ",", "\n", "  ", "KRectangleUpper", ",", " ", 
+     "H0RectangleUpper", ",", " ", "HInfinityRectangleUpper", ",", "\n", "  ",
+      "MellinMajorantCheck", ",", "\n", "  ", "ClosedFormPeriodicData", ",", 
+     " ", "ClosedFormEnvelopeCheck", ",", " ", "RootOfUnityDoubleSum", ",", 
+     "\n", "  ", "RootOfUnityIdentityCheck", ",", " ", "RootScaleRatio", ",", 
+     " ", "RootScaleEndpointChecks", ",", "\n", "  ", "NormalizedThreshold", ",",
+      " ", "GeneralThreshold", ",", " ", "$MercaProgress", ",", "\n", "  ", 
+     "MercaReport", ",", " ", "VerifySystem", ",", "\n", "  ", "n", ",", " ", 
+     "p", ",", " ", "x"}], "\n", "]"}], ";"}], "\n", "\n", 
+  RowBox[{"(*", "\n", "  ", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"Chapters", " ", "2"}], "-", "3"}], ":", " ", 
+    RowBox[{"restricted", "-", 
+     RowBox[{
+     "partition", " ", "data", " ", "and", " ", "the", " ", "theoretical", " ",
+       "periodic", " ", 
+      RowBox[{"bound", "."}]}]}]}], "\n", "*)"}]}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"PairwiseCoprimeQ", "[", "parts_List", "]"}], " ", ":=", "\n", 
+    "  ", 
+    RowBox[{"And", " ", "@@", " ", 
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{
+          RowBox[{"Apply", "[", 
+           RowBox[{"GCD", ",", " ", "#"}], "]"}], " ", "==", " ", "1"}], 
+         ")"}], " ", "&"}], " ", "/@", " ", 
+       RowBox[{"Subsets", "[", 
+        RowBox[{"parts", ",", " ", 
+         RowBox[{"{", "2", "}"}]}], "]"}]}], ")"}]}]}], ";"}], "\n"}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"RestrictedPartitionCounts", "[", 
+     RowBox[{"parts_List", ",", " ", 
+      RowBox[{"limit_Integer", "?", "NonNegative"}]}], "]"}], " ", ":=", "\n",
+     " ", 
+    RowBox[{"Module", "[", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{"counts", " ", "=", " ", 
+        RowBox[{"ConstantArray", "[", 
+         RowBox[{"0", ",", " ", 
+          RowBox[{"limit", " ", "+", " ", "1"}]}], "]"}]}], "}"}], ",", "\n", 
+      "  ", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"counts", "[", 
+         RowBox[{"[", "1", "]"}], "]"}], " ", "=", " ", "1"}], ";", "\n", 
+       "  ", 
+       RowBox[{"Do", "[", "\n", "   ", 
+        RowBox[{
+         RowBox[{"Do", "[", "\n", "    ", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"counts", "[", 
+             RowBox[{"[", 
+              RowBox[{"degree", " ", "+", " ", "1"}], "]"}], "]"}], " ", "=", 
+            "\n", "      ", 
+            RowBox[{
+             RowBox[{"counts", "[", 
+              RowBox[{"[", 
+               RowBox[{"degree", " ", "+", " ", "1"}], "]"}], "]"}], " ", "+",
+              " ", 
+             RowBox[{"counts", "[", 
+              RowBox[{"[", 
+               RowBox[{"degree", " ", "-", " ", "part", " ", "+", " ", "1"}], 
+               "]"}], "]"}]}]}], ",", "\n", "    ", 
+           RowBox[{"{", 
+            RowBox[{"degree", ",", " ", "part", ",", " ", "limit"}], "}"}]}], 
+          "\n", "   ", "]"}], ",", "\n", "   ", 
+         RowBox[{"{", 
+          RowBox[{"part", ",", " ", "parts"}], "}"}]}], "\n", "  ", "]"}], ";",
+        "\n", "  ", "counts"}]}], "\n", " ", "]"}]}], ";"}], "\n"}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"P4", "[", 
+     RowBox[{"x_", ",", " ", "r_Integer", ",", " ", "s_Integer"}], "]"}], " ",
+     ":=", "\n", " ", 
+    RowBox[{
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{"x", "^", "3"}], " ", "+", " ", 
+       RowBox[{"6", " ", "r", " ", 
+        RowBox[{"x", "^", "2"}]}], " ", "+", " ", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{
+          RowBox[{"21", " ", 
+           RowBox[{"r", "^", "2"}]}], " ", "+", " ", 
+          RowBox[{"2", " ", "r", " ", "s"}], " ", "-", " ", 
+          RowBox[{"2", " ", 
+           RowBox[{"s", "^", "2"}]}]}], ")"}], " ", 
+        RowBox[{"x", "/", "2"}]}]}], ")"}], "/", "\n", "  ", 
+     RowBox[{"(", 
+      RowBox[{"6", " ", "s", " ", 
+       RowBox[{"(", 
+        RowBox[{"r", " ", "-", " ", "s"}], ")"}], " ", 
+       RowBox[{"(", 
+        RowBox[{"r", " ", "+", " ", "s"}], ")"}], " ", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{"2", " ", "r"}], " ", "-", " ", "s"}], ")"}]}], ")"}]}]}], 
+   ";"}], "\n"}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"PEven", "[", 
+     RowBox[{"x_", ",", " ", "r_Integer", ",", " ", "s_Integer"}], "]"}], " ",
+     ":=", "\n", " ", 
+    RowBox[{
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{"x", "^", "2"}], " ", "+", " ", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{
+          RowBox[{"2", " ", "r"}], " ", "+", " ", "s"}], ")"}], " ", "x"}], 
+       " ", "+", " ", 
+       RowBox[{"2", " ", "r"}], " ", "+", " ", "s", " ", "-", " ", "1"}], 
+      ")"}], "/", "\n", "  ", 
+     RowBox[{"(", 
+      RowBox[{"2", " ", "s", " ", 
+       RowBox[{"(", 
+        RowBox[{"r", " ", "-", " ", "s"}], ")"}], " ", 
+       RowBox[{"(", 
+        RowBox[{"r", " ", "+", " ", "s"}], ")"}]}], ")"}]}]}], ";"}], 
+  "\n"}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"POdd", "[", 
+     RowBox[{"x_", ",", " ", "r_Integer", ",", " ", "s_Integer"}], "]"}], " ",
+     ":=", "\n", " ", 
+    RowBox[{
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{"x", "^", "2"}], " ", "+", " ", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{
+          RowBox[{"3", " ", "r"}], " ", "-", " ", "s"}], ")"}], " ", "x"}], 
+       " ", "+", " ", 
+       RowBox[{"3", " ", "r"}], " ", "-", " ", "s", " ", "-", " ", "1"}], 
+      ")"}], "/", "\n", "  ", 
+     RowBox[{"(", 
+      RowBox[{"2", " ", "s", " ", 
+       RowBox[{"(", 
+        RowBox[{"r", " ", "-", " ", "s"}], ")"}], " ", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{"2", " ", "r"}], " ", "-", " ", "s"}], ")"}]}], ")"}]}]}], 
+   ";"}], "\n", "\n", 
+  RowBox[{"(*", "\n", "  ", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"The", " ", "principal", " ", "part", " ", "at", " ", "q"}], "=", 
+     RowBox[{"1", " ", "gives", " ", 
+      RowBox[{"kappa", ".", " ", "P4"}]}]}], ",", " ", 
+    RowBox[{
+    "PEven", " ", "and", " ", "POdd", " ", "implement", " ", "P_", "3"}], ",",
+     " ", 
+    RowBox[{"P_", 
+     RowBox[{"{", 
+      RowBox[{"2", ",", "s"}], "}"}], " ", "and", " ", "P_", 
+     RowBox[{"{", 
+      RowBox[{"2", ",", 
+       RowBox[{"r", "-", "s"}]}], "}"}]}], ",", " ", 
+    RowBox[{"respectively", "."}]}], "\n", "*)"}]}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"PrincipalConstant", "[", 
+     RowBox[{"parts_List", ",", " ", "polynomial_"}], "]"}], " ", ":=", "\n", 
+    " ", 
+    RowBox[{"Module", "[", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"ell", " ", "=", " ", 
+         RowBox[{"Length", "[", "parts", "]"}]}], ",", " ", "q", ",", " ", 
+        "h", ",", " ", "coefficients"}], "}"}], ",", "\n", "  ", 
+      RowBox[{
+       RowBox[{"h", " ", "=", " ", 
+        RowBox[{"Times", " ", "@@", " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"(", 
+               RowBox[{"1", " ", "-", " ", "q"}], ")"}], "/", 
+              RowBox[{"(", 
+               RowBox[{"1", " ", "-", " ", 
+                RowBox[{"q", "^", "#"}]}], ")"}]}], ")"}], " ", "&"}], " ", "/@",
+            " ", "parts"}], ")"}]}]}], ";", "\n", "  ", 
+       RowBox[{"coefficients", " ", "=", " ", 
+        RowBox[{"Table", "[", "\n", "    ", 
+         RowBox[{
+          RowBox[{
+           RowBox[{
+            RowBox[{
+             RowBox[{"(", 
+              RowBox[{"-", "1"}], ")"}], "^", 
+             RowBox[{"(", 
+              RowBox[{"ell", " ", "-", " ", "j"}], ")"}]}], "/", 
+            RowBox[{
+             RowBox[{"(", 
+              RowBox[{"ell", " ", "-", " ", "j"}], ")"}], "!"}]}], " ", "*", 
+           "\n", "      ", 
+           RowBox[{"Limit", "[", 
+            RowBox[{
+             RowBox[{"D", "[", 
+              RowBox[{"h", ",", " ", 
+               RowBox[{"{", 
+                RowBox[{"q", ",", " ", 
+                 RowBox[{"ell", " ", "-", " ", "j"}]}], "}"}]}], "]"}], ",", 
+             " ", 
+             RowBox[{"q", " ", "->", " ", "1"}]}], "]"}]}], ",", "\n", "    ", 
+          RowBox[{"{", 
+           RowBox[{"j", ",", " ", "1", ",", " ", "ell"}], "}"}]}], "\n", 
+         "   ", "]"}]}], ";", "\n", "  ", 
+       RowBox[{"FullSimplify", "[", 
+        RowBox[{
+         RowBox[{"Total", "[", "coefficients", "]"}], " ", "-", " ", 
+         RowBox[{"polynomial", "[", "0", "]"}]}], "]"}]}]}], "\n", " ", 
+     "]"}]}], ";"}], "\n"}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"GeneralResidueEnvelope", "[", 
+     RowBox[{"parts_List", ",", " ", "polynomial_"}], "]"}], " ", ":=", "\n", 
+    " ", 
+    RowBox[{"Module", "[", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{
+       "ell", ",", " ", "period", ",", " ", "kappa", ",", " ", "radius"}], 
+       "}"}], ",", "\n", "  ", 
+      RowBox[{
+       RowBox[{"If", "[", 
+        RowBox[{
+         RowBox[{"!", " ", 
+          RowBox[{"PairwiseCoprimeQ", "[", "parts", "]"}]}], ",", "\n", "   ", 
+         RowBox[{"Return", "[", 
+          RowBox[{"Failure", "[", 
+           RowBox[{"\"\<NotPairwiseCoprime\>\"", ",", " ", 
+            RowBox[{"<|", 
+             RowBox[{"\"\<Parts\>\"", " ", "->", " ", "parts"}], "|>"}]}], 
+           "]"}], "]"}]}], "\n", "  ", "]"}], ";", "\n", "  ", 
+       RowBox[{"ell", " ", "=", " ", 
+        RowBox[{"Length", "[", "parts", "]"}]}], ";", "\n", "  ", 
+       RowBox[{"period", " ", "=", " ", 
+        RowBox[{"Times", " ", "@@", " ", "parts"}]}], ";", "\n", "  ", 
+       RowBox[{"kappa", " ", "=", " ", 
+        RowBox[{"PrincipalConstant", "[", 
+         RowBox[{"parts", ",", " ", "polynomial"}], "]"}]}], ";", "\n", "  ", 
+       RowBox[{"radius", " ", "=", " ", 
+        RowBox[{
+         RowBox[{"4", "^", 
+          RowBox[{"(", 
+           RowBox[{"1", " ", "-", " ", "ell"}], ")"}]}], " ", 
+         RowBox[{"Total", "[", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"(", 
+               RowBox[{"#", " ", "-", " ", "1"}], ")"}], " ", 
+              RowBox[{"#", "^", 
+               RowBox[{"(", 
+                RowBox[{"ell", " ", "-", " ", "2"}], ")"}]}]}], ")"}], " ", 
+            "&"}], " ", "/@", " ", "parts"}], "]"}]}]}], ";", "\n", "  ", 
+       RowBox[{"<|", "\n", "   ", 
+        RowBox[{
+         RowBox[{"\"\<Parts\>\"", " ", "->", " ", "parts"}], ",", " ", 
+         RowBox[{"\"\<Period\>\"", " ", "->", " ", "period"}], ",", "\n", 
+         "   ", 
+         RowBox[{"\"\<EnvelopeMode\>\"", " ", "->", 
+          " ", "\"\<general-residue\>\""}], ",", "\n", "   ", 
+         RowBox[{"\"\<Kappa\>\"", " ", "->", " ", "kappa"}], ",", " ", 
+         RowBox[{"\"\<ResidueRadius\>\"", " ", "->", " ", "radius"}], ",", 
+         "\n", "   ", 
+         RowBox[{"\"\<EpsilonMin\>\"", " ", "->", " ", 
+          RowBox[{"FullSimplify", "[", 
+           RowBox[{"kappa", " ", "-", " ", "radius"}], "]"}]}], ",", "\n", 
+         "   ", 
+         RowBox[{"\"\<EpsilonMax\>\"", " ", "->", " ", 
+          RowBox[{"FullSimplify", "[", 
+           RowBox[{"kappa", " ", "+", " ", "radius"}], "]"}]}], ",", "\n", 
+         "   ", 
+         RowBox[{"\"\<Oscillation\>\"", " ", "->", " ", 
+          RowBox[{"FullSimplify", "[", 
+           RowBox[{"2", " ", "radius"}], "]"}]}], ",", "\n", "   ", 
+         RowBox[{"\"\<ArgMin\>\"", " ", "->", " ", 
+          RowBox[{"Missing", "[", "\"\<NotEnumerated\>\"", "]"}]}], ",", "\n",
+          "   ", 
+         RowBox[{"\"\<ArgMax\>\"", " ", "->", " ", 
+          RowBox[{"Missing", "[", "\"\<NotEnumerated\>\"", "]"}]}]}], "\n", 
+        "  ", "|>"}]}]}], "\n", " ", "]"}]}], ";"}], "\n", "\n", "\n", 
+  RowBox[{"(*", "\n", "  ", 
+   RowBox[{
+    RowBox[{"Closed", " ", "forms", " ", "for", " ", "kappa_", "4"}], ",", 
+    " ", "kappa_e", ",", " ", 
+    RowBox[{
+    "kappa_o", " ", "and", " ", "the", " ", "bounds", " ", "B_", "4"}], ",", 
+    " ", 
+    RowBox[{"B_", 
+     RowBox[{"{", 
+      RowBox[{"3", ",", "s"}], "}"}]}], ",", " ", 
+    RowBox[{
+     RowBox[{"B_", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{"3", ",", 
+         RowBox[{"r", "-", "s"}]}], "}"}], ".", " ", "EpsilonMin"}], " ", 
+      "and", " ", "EpsilonMax", " ", "are", " ", "the", " ", "envelope", " ", 
+      "kappa"}], "-", 
+     RowBox[{"B", " ", "and", " ", "kappa"}], "+", "B"}], ",", " ", 
+    RowBox[{"not", " ", "the", " ", "exact", " ", "periodic", " ", 
+     RowBox[{"extrema", ".", " ", "Oscillation"}], " ", "is", " ", "the", " ",
+      "resulting", " ", "bound", " ", "2", 
+     RowBox[{"B", "."}]}]}], "\n", "*)"}]}], "\n", 
+ RowBox[{
+  RowBox[{"ClosedFormPeriodicData", "[", 
+   RowBox[{"r_Integer", ",", " ", "s_Integer"}], "]"}], " ", ":=", "\n", " ", 
+  RowBox[{"<|", "\n", "  ", 
+   RowBox[{
+    RowBox[{"\"\<Four\>\"", " ", "->", " ", 
+     RowBox[{"<|", "\n", "    ", 
+      RowBox[{
+       RowBox[{"\"\<Kappa\>\"", " ", "->", " ", 
+        RowBox[{"r", " ", 
+         RowBox[{
+          RowBox[{"(", 
+           RowBox[{
+            RowBox[{"5", " ", 
+             RowBox[{"r", "^", "2"}]}], " ", "+", " ", 
+            RowBox[{"2", " ", "r", " ", "s"}], " ", "-", " ", 
+            RowBox[{"2", " ", 
+             RowBox[{"s", "^", "2"}]}]}], ")"}], "/", "\n", "      ", 
+          RowBox[{"(", 
+           RowBox[{"6", " ", "s", " ", 
+            RowBox[{"(", 
+             RowBox[{"r", " ", "-", " ", "s"}], ")"}], " ", 
+            RowBox[{"(", 
+             RowBox[{"r", " ", "+", " ", "s"}], ")"}], " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"2", " ", "r"}], " ", "-", " ", "s"}], ")"}]}], 
+           ")"}]}]}]}], ",", "\n", "    ", 
+       RowBox[{"\"\<ResidueRadius\>\"", " ", "->", "\n", "      ", 
+        RowBox[{
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"5", " ", 
+            RowBox[{"r", "^", "3"}]}], " ", "-", " ", 
+           RowBox[{"6", " ", 
+            RowBox[{"r", "^", "2"}], " ", "s"}], " ", "+", " ", 
+           RowBox[{"6", " ", "r", " ", 
+            RowBox[{"s", "^", "2"}]}], " ", "-", " ", 
+           RowBox[{"3", " ", 
+            RowBox[{"r", "^", "2"}]}], " ", "+", " ", 
+           RowBox[{"2", " ", "r", " ", "s"}], " ", "-", " ", 
+           RowBox[{"2", " ", 
+            RowBox[{"s", "^", "2"}]}]}], ")"}], "/", "32"}]}]}], "|>"}]}], ",",
+     "\n", "  ", 
+    RowBox[{"\"\<Even\>\"", " ", "->", " ", 
+     RowBox[{"<|", "\n", "    ", 
+      RowBox[{
+       RowBox[{"\"\<Kappa\>\"", " ", "->", " ", 
+        RowBox[{
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"5", " ", 
+            RowBox[{"r", "^", "2"}]}], " ", "+", " ", 
+           RowBox[{"6", " ", "r", " ", "s"}], " ", "-", " ", 
+           RowBox[{"12", " ", "r"}], " ", "-", " ", 
+           RowBox[{"6", " ", "s"}], " ", "+", " ", "6"}], ")"}], "/", "\n", 
+         "      ", 
+         RowBox[{"(", 
+          RowBox[{"12", " ", "s", " ", 
+           RowBox[{"(", 
+            RowBox[{"r", " ", "-", " ", "s"}], ")"}], " ", 
+           RowBox[{"(", 
+            RowBox[{"r", " ", "+", " ", "s"}], ")"}]}], ")"}]}]}], ",", "\n", 
+       "    ", 
+       RowBox[{"\"\<ResidueRadius\>\"", " ", "->", " ", 
+        RowBox[{
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"2", " ", 
+            RowBox[{"r", "^", "2"}]}], " ", "+", " ", 
+           RowBox[{"3", " ", 
+            RowBox[{"s", "^", "2"}]}], " ", "-", " ", 
+           RowBox[{"2", " ", "r"}], " ", "-", " ", "s"}], ")"}], "/", 
+         "16"}]}]}], "|>"}]}], ",", "\n", "  ", 
+    RowBox[{"\"\<Odd\>\"", " ", "->", " ", 
+     RowBox[{"<|", "\n", "    ", 
+      RowBox[{
+       RowBox[{"\"\<Kappa\>\"", " ", "->", " ", 
+        RowBox[{
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"11", " ", 
+            RowBox[{"r", "^", "2"}]}], " ", "-", " ", 
+           RowBox[{"6", " ", "r", " ", "s"}], " ", "-", " ", 
+           RowBox[{"18", " ", "r"}], " ", "+", " ", 
+           RowBox[{"6", " ", "s"}], " ", "+", " ", "6"}], ")"}], "/", "\n", 
+         "      ", 
+         RowBox[{"(", 
+          RowBox[{"12", " ", "s", " ", 
+           RowBox[{"(", 
+            RowBox[{"r", " ", "-", " ", "s"}], ")"}], " ", 
+           RowBox[{"(", 
+            RowBox[{
+             RowBox[{"2", " ", "r"}], " ", "-", " ", "s"}], ")"}]}], 
+          ")"}]}]}], ",", "\n", "    ", 
+       RowBox[{"\"\<ResidueRadius\>\"", " ", "->", "\n", "      ", 
+        RowBox[{
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"5", " ", 
+            RowBox[{"r", "^", "2"}]}], " ", "-", " ", 
+           RowBox[{"6", " ", "r", " ", "s"}], " ", "+", " ", 
+           RowBox[{"3", " ", 
+            RowBox[{"s", "^", "2"}]}], " ", "-", " ", 
+           RowBox[{"3", " ", "r"}], " ", "+", " ", "s"}], ")"}], "/", 
+         "16"}]}]}], "|>"}]}]}], "\n", " ", "|>"}]}], "\n", 
+ RowBox[{";", "\n"}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"ClosedFormEnvelopeCheck", "[", 
+     RowBox[{"r_Integer", ",", " ", "s_Integer"}], "]"}], " ", ":=", "\n", 
+    " ", 
+    RowBox[{"Module", "[", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{
+       "closed", ",", " ", "families", ",", " ", "computed", ",", " ", 
+        "all"}], "}"}], ",", "\n", "  ", 
+      RowBox[{
+       RowBox[{"closed", " ", "=", " ", 
+        RowBox[{"ClosedFormPeriodicData", "[", 
+         RowBox[{"r", ",", " ", "s"}], "]"}]}], ";", "\n", "  ", 
+       RowBox[{"families", " ", "=", " ", 
+        RowBox[{"<|", "\n", "    ", 
+         RowBox[{
+          RowBox[{"\"\<Four\>\"", " ", "->", " ", 
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"{", 
+              RowBox[{"s", ",", " ", 
+               RowBox[{"r", " ", "-", " ", "s"}], ",", " ", 
+               RowBox[{"r", " ", "+", " ", "s"}], ",", " ", 
+               RowBox[{
+                RowBox[{"2", " ", "r"}], " ", "-", " ", "s"}]}], "}"}], ",", 
+             " ", 
+             RowBox[{"Function", "[", 
+              RowBox[{
+               RowBox[{"{", "x", "}"}], ",", " ", 
+               RowBox[{"P4", "[", 
+                RowBox[{"x", ",", " ", "r", ",", " ", "s"}], "]"}]}], "]"}]}],
+             "}"}]}], ",", "\n", "    ", 
+          RowBox[{"\"\<Even\>\"", " ", "->", " ", 
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"{", 
+              RowBox[{"s", ",", " ", 
+               RowBox[{"r", " ", "-", " ", "s"}], ",", " ", 
+               RowBox[{"r", " ", "+", " ", "s"}]}], "}"}], ",", " ", 
+             RowBox[{"Function", "[", 
+              RowBox[{
+               RowBox[{"{", "x", "}"}], ",", " ", 
+               RowBox[{"PEven", "[", 
+                RowBox[{"x", ",", " ", "r", ",", " ", "s"}], "]"}]}], "]"}]}],
+             "}"}]}], ",", "\n", "    ", 
+          RowBox[{"\"\<Odd\>\"", " ", "->", " ", 
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"{", 
+              RowBox[{"s", ",", " ", 
+               RowBox[{"r", " ", "-", " ", "s"}], ",", " ", 
+               RowBox[{
+                RowBox[{"2", " ", "r"}], " ", "-", " ", "s"}]}], "}"}], ",", 
+             " ", 
+             RowBox[{"Function", "[", 
+              RowBox[{
+               RowBox[{"{", "x", "}"}], ",", " ", 
+               RowBox[{"POdd", "[", 
+                RowBox[{"x", ",", " ", "r", ",", " ", "s"}], "]"}]}], "]"}]}],
+             "}"}]}]}], "|>"}]}], ";", "\n", "  ", 
+       RowBox[{"computed", " ", "=", " ", 
+        RowBox[{"AssociationMap", "[", "\n", "    ", 
+         RowBox[{
+          RowBox[{"Function", "[", 
+           RowBox[{"name", ",", "\n", "      ", 
+            RowBox[{"With", "[", 
+             RowBox[{
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{"parts", " ", "=", " ", 
+                 RowBox[{
+                  RowBox[{"families", "[", "name", "]"}], "[", 
+                  RowBox[{"[", "1", "]"}], "]"}]}], ",", " ", 
+                RowBox[{"polynomial", " ", "=", " ", 
+                 RowBox[{
+                  RowBox[{"families", "[", "name", "]"}], "[", 
+                  RowBox[{"[", "2", "]"}], "]"}]}]}], "}"}], ",", "\n", 
+              "       ", 
+              RowBox[{"<|", "\n", "        ", 
+               RowBox[{
+                RowBox[{"\"\<KappaCheck\>\"", " ", "->", "\n", "          ", 
+                 RowBox[{"TrueQ", "[", 
+                  RowBox[{"FullSimplify", "[", 
+                   RowBox[{
+                    RowBox[{"PrincipalConstant", "[", 
+                    RowBox[{"parts", ",", " ", "polynomial"}], "]"}], " ", "==",
+                     "\n", "            ", 
+                    RowBox[{
+                    RowBox[{"closed", "[", "name", "]"}], "[", "\"\<Kappa\>\"",
+                     "]"}]}], "]"}], "]"}]}], ",", "\n", "        ", 
+                
+                RowBox[{"\"\<ResidueRadiusCheck\>\"", " ", "->", "\n", 
+                 "          ", 
+                 RowBox[{"TrueQ", "[", 
+                  RowBox[{"FullSimplify", "[", "\n", "            ", 
+                   RowBox[{
+                    RowBox[{
+                    RowBox[{"4", "^", 
+                    RowBox[{"(", 
+                    RowBox[{"1", " ", "-", " ", 
+                    RowBox[{"Length", "[", "parts", "]"}]}], ")"}]}], "\n", 
+                    "              ", 
+                    RowBox[{"Total", "[", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"(", 
+                    RowBox[{
+                    RowBox[{"(", 
+                    RowBox[{"#", " ", "-", " ", "1"}], ")"}], " ", 
+                    RowBox[{"#", "^", 
+                    RowBox[{"(", 
+                    RowBox[{
+                    RowBox[{"Length", "[", "parts", "]"}], " ", "-", " ", 
+                    "2"}], ")"}]}]}], ")"}], " ", "&"}], " ", "/@", " ", 
+                    "parts"}], "]"}]}], " ", "==", "\n", "            ", 
+                    RowBox[{
+                    RowBox[{"closed", "[", "name", "]"}], 
+                    "[", "\"\<ResidueRadius\>\"", "]"}]}], "]"}], "]"}]}]}], 
+               "\n", "       ", "|>"}]}], "]"}]}], "]"}], ",", "\n", "    ", 
+          RowBox[{"Keys", "[", "families", "]"}]}], "]"}]}], ";", "\n", "  ", 
+       RowBox[{"all", " ", "=", " ", 
+        RowBox[{"And", " ", "@@", " ", 
+         RowBox[{"Flatten", "[", "\n", "    ", 
+          RowBox[{"(", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"{", 
+              RowBox[{
+               RowBox[{"#", "[", "\"\<KappaCheck\>\"", "]"}], ",", " ", 
+               RowBox[{"#", "[", "\"\<ResidueRadiusCheck\>\"", "]"}]}], "}"}],
+              " ", "&"}], " ", "/@", " ", 
+            RowBox[{"Values", "[", "computed", "]"}]}], ")"}], "]"}]}]}], ";",
+        "\n", "  ", 
+       RowBox[{"Append", "[", 
+        RowBox[{"computed", ",", " ", 
+         RowBox[{"\"\<AllChecks\>\"", " ", "->", " ", "all"}]}], "]"}]}]}], 
+     "\n", " ", "]"}]}], ";"}], "\n", "\n", 
+  RowBox[{"(*", "\n", "  ", 
+   RowBox[{
+    RowBox[{"The", " ", "root"}], "-", "of", "-", 
+    RowBox[{
+    "unity", " ", "formula", " ", "in", " ", "the", " ", "preliminaries", " ",
+      "is", " ", "evaluated", " ", 
+     RowBox[{"directly", ":", " ", 
+      RowBox[{
+      "i", " ", "selects", " ", "a", " ", "denominator", " ", "factor", " ", 
+       "and", " ", "h", " ", "selects", " ", "one", " ", "of", " ", "its", " ",
+        "nontrivial", " ", "roots", " ", "of", " ", 
+       RowBox[{"unity", ".", " ", "This"}], " ", "numerical", " ", "check", " ",
+        "is", " ", "a", " ", 
+       RowBox[{"diagnostic", "."}]}]}]}]}], "\n", "*)"}]}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"RootOfUnityDoubleSum", "[", 
+     RowBox[{"parts_List", ",", " ", 
+      RowBox[{"degree_Integer", "?", "NonNegative"}], ",", "\n", "   ", 
+      RowBox[{"workingPrecision_Integer", " ", ":", " ", "70"}]}], "]"}], " ",
+     ":=", "\n", " ", 
+    RowBox[{"Module", "[", 
+     RowBox[{
+      RowBox[{"{", "terms", "}"}], ",", "\n", "  ", 
+      RowBox[{
+       RowBox[{"If", "[", 
+        RowBox[{
+         RowBox[{"!", " ", 
+          RowBox[{"PairwiseCoprimeQ", "[", "parts", "]"}]}], ",", "\n", "   ", 
+         RowBox[{"Return", "[", 
+          RowBox[{"Failure", "[", 
+           RowBox[{"\"\<NotPairwiseCoprime\>\"", ",", " ", 
+            RowBox[{"<|", 
+             RowBox[{"\"\<Parts\>\"", " ", "->", " ", "parts"}], "|>"}]}], 
+           "]"}], "]"}]}], "]"}], ";", "\n", "  ", 
+       RowBox[{"terms", " ", "=", " ", 
+        RowBox[{"Flatten", "[", "\n", "    ", 
+         RowBox[{
+          RowBox[{"Table", "[", "\n", "     ", 
+           RowBox[{
+            RowBox[{"With", "[", 
+             RowBox[{
+              RowBox[{"{", 
+               RowBox[{"zeta", " ", "=", " ", 
+                RowBox[{"N", "[", 
+                 RowBox[{
+                  RowBox[{"Exp", "[", 
+                   RowBox[{"2", " ", "Pi", " ", "I", " ", 
+                    RowBox[{"h", "/", 
+                    RowBox[{"parts", "[", 
+                    RowBox[{"[", "i", "]"}], "]"}]}]}], "]"}], ",", " ", 
+                  "workingPrecision"}], "]"}]}], "}"}], ",", "\n", "      ", 
+              RowBox[{
+               RowBox[{"zeta", "^", 
+                RowBox[{"(", 
+                 RowBox[{"-", "degree"}], ")"}]}], "/", "\n", "       ", 
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{"parts", "[", 
+                  RowBox[{"[", "i", "]"}], "]"}], " ", 
+                 RowBox[{"Product", "[", "\n", "          ", 
+                  RowBox[{
+                   RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{"j", " ", "==", " ", "i"}], ",", " ", "1", ",", 
+                    " ", 
+                    RowBox[{"1", " ", "-", " ", 
+                    RowBox[{"zeta", "^", 
+                    RowBox[{"parts", "[", 
+                    RowBox[{"[", "j", "]"}], "]"}]}]}]}], "]"}], ",", " ", 
+                   RowBox[{"{", 
+                    RowBox[{"j", ",", " ", 
+                    RowBox[{"Length", "[", "parts", "]"}]}], "}"}]}], "]"}]}],
+                 ")"}]}]}], "]"}], ",", "\n", "     ", 
+            RowBox[{"{", 
+             RowBox[{"i", ",", " ", 
+              RowBox[{"Length", "[", "parts", "]"}]}], "}"}], ",", " ", 
+            RowBox[{"{", 
+             RowBox[{"h", ",", " ", "1", ",", " ", 
+              RowBox[{
+               RowBox[{"parts", "[", 
+                RowBox[{"[", "i", "]"}], "]"}], " ", "-", " ", "1"}]}], 
+             "}"}]}], "]"}], ",", " ", "1"}], "]"}]}], ";", "\n", "  ", 
+       RowBox[{"Total", "[", "terms", "]"}]}]}], "\n", " ", "]"}]}], ";"}], 
+  "\n"}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"RootOfUnityIdentityCheck", "[", 
+    RowBox[{"system_Association", ",", "\n", "   ", 
+     RowBox[{"degrees_List", " ", ":", " ", 
+      RowBox[{"Range", "[", 
+       RowBox[{"0", ",", " ", "6"}], "]"}]}], ",", " ", 
+     RowBox[{"workingPrecision_Integer", " ", ":", " ", "70"}]}], "]"}], " ", 
+   ":=", "\n", " ", 
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+      "parts", ",", " ", "polynomial", ",", " ", "kappa", ",", " ", "counts", 
+       ",", " ", "errors", ",", " ", "maximum"}], "}"}], ",", "\n", "  ", 
+     RowBox[{
+      RowBox[{"If", "[", 
+       RowBox[{
+        RowBox[{"degrees", " ", "===", " ", 
+         RowBox[{"{", "}"}]}], ",", "\n", "   ", 
+        RowBox[{"Return", "[", 
+         RowBox[{"Failure", "[", 
+          RowBox[{"\"\<EmptyDegreeList\>\"", ",", " ", 
+           RowBox[{"<|", "|>"}]}], "]"}], "]"}]}], "]"}], ";", "\n", "  ", 
+      RowBox[{"parts", " ", "=", " ", 
+       RowBox[{
+        RowBox[{"system", "[", "\"\<Extrema\>\"", "]"}], "[", "\"\<Parts\>\"",
+         "]"}]}], ";", "\n", "  ", 
+      RowBox[{"If", "[", 
+       RowBox[{
+        RowBox[{"!", " ", 
+         RowBox[{"PairwiseCoprimeQ", "[", "parts", "]"}]}], ",", "\n", "   ", 
+        RowBox[{"Return", "[", 
+         RowBox[{"Failure", "[", 
+          RowBox[{"\"\<NotPairwiseCoprime\>\"", ",", " ", 
+           RowBox[{"<|", 
+            RowBox[{"\"\<Parts\>\"", " ", "->", " ", "parts"}], "|>"}]}], 
+          "]"}], "]"}]}], "]"}], ";", "\n", "  ", 
+      RowBox[{"polynomial", " ", "=", " ", 
+       RowBox[{"system", "[", "\"\<Polynomial\>\"", "]"}]}], ";", "\n", "  ", 
+      RowBox[{"kappa", " ", "=", " ", 
+       RowBox[{
+        RowBox[{"system", "[", "\"\<Extrema\>\"", "]"}], "[", "\"\<Kappa\>\"",
+         "]"}]}], ";", "\n", "  ", 
+      RowBox[{"counts", " ", "=", " ", 
+       RowBox[{"RestrictedPartitionCounts", "[", 
+        RowBox[{"parts", ",", " ", 
+         RowBox[{"Max", "[", "degrees", "]"}]}], "]"}]}], ";", "\n", "  ", 
+      RowBox[{"errors", " ", "=", " ", 
+       RowBox[{"Table", "[", "\n", "    ", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"N", "[", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"counts", "[", 
+              RowBox[{"[", 
+               RowBox[{"degree", " ", "+", " ", "1"}], "]"}], "]"}], " ", "-",
+              " ", 
+             RowBox[{"polynomial", "[", "degree", "]"}], " ", "-", " ", 
+             "kappa"}], ",", "\n", "       ", "workingPrecision"}], "]"}], 
+          " ", "-", "\n", "      ", 
+          RowBox[{"RootOfUnityDoubleSum", "[", 
+           RowBox[{
+           "parts", ",", " ", "degree", ",", " ", "workingPrecision"}], 
+           "]"}]}], ",", "\n", "    ", 
+         RowBox[{"{", 
+          RowBox[{"degree", ",", " ", "degrees"}], "}"}]}], "]"}]}], ";", 
+      "\n", "  ", 
+      RowBox[{"maximum", " ", "=", " ", 
+       RowBox[{"Max", "[", 
+        RowBox[{"Abs", "[", "errors", "]"}], "]"}]}], ";", "\n", "  ", 
+      RowBox[{"<|", 
+       RowBox[{
+        RowBox[{"\"\<Degrees\>\"", " ", "->", " ", "degrees"}], ",", " ", 
+        RowBox[{"\"\<Errors\>\"", " ", "->", " ", 
+         RowBox[{"Chop", "[", 
+          RowBox[{"errors", ",", " ", 
+           RowBox[{"10", "^", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "workingPrecision"}], "/", "3"}], ")"}]}]}], 
+          "]"}]}], ",", "\n", "    ", 
+        RowBox[{"\"\<MaxAbsoluteError\>\"", " ", "->", " ", "maximum"}], ",", 
+        "\n", "    ", 
+        RowBox[{"\"\<Passed\>\"", " ", "->", " ", 
+         RowBox[{"TrueQ", "[", 
+          RowBox[{"maximum", " ", "<", " ", 
+           RowBox[{"10", "^", 
+            RowBox[{"(", 
+             RowBox[{"-", 
+              RowBox[{"Floor", "[", 
+               RowBox[{"workingPrecision", "/", "3"}], "]"}]}], ")"}]}]}], 
+          "]"}]}]}], "|>"}]}]}], "\n", " ", "]"}]}], ";"}]}], "Input",
+ CellLabel->
+  "In[107]:=",ExpressionUUID->"733643a2-58a7-074d-8b48-b3ab7c9ee353"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"closedFormData", " ", "=", " ", 
+   RowBox[{"ClosedFormPeriodicData", "[", 
+    RowBox[{"12", ",", " ", "1"}], "]"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{"closedFormChecks", " ", "=", " ", 
+   RowBox[{"ClosedFormEnvelopeCheck", "[", 
+    RowBox[{"12", ",", " ", "1"}], "]"}]}], ";"}], "\n", 
+ RowBox[{"closedFormData", " ", "//", " ", "Dataset"}], "\n", 
+ RowBox[{"closedFormChecks", " ", "//", " ", "Dataset"}]}], "Input",
+ CellLabel->
+  "In[116]:=",ExpressionUUID->"4c68e910-7e38-3c4c-bced-dfdbaa70fea3"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["2. Chapters 3-4: exact finite polynomial checks", "Section",ExpressionUUID->"804a0ff4-98be-d248-8ebd-2ec9828cb0d7"],
+
+Cell["\<\
+The default example is (r,s,k)=(12,1,1). Interpolation, roots and \
+coefficients use exact arithmetic. The finite check includes n_b and the next \
+200 coefficients. In general-residue mode the reported threshold is \
+sufficient and may exceed the one obtained from exact periodic extrema.\
+\>", "Text",ExpressionUUID->"be78bde1-ce02-3149-8030-6571f6cfc3a1"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", "\n", "  ", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"Chapters", " ", "3"}], "-", "4"}], ":", " ", 
+    RowBox[{"the", " ", "four", " ", "theta", " ", "shifts", " ", "t_", 
+     RowBox[{"{", 
+      RowBox[{"i", ",", "j"}], "}"}], " ", "and", " ", "the", " ", "finite", " ",
+      "factors", " ", "used", " ", "in", " ", "the", " ", "branch", " ", 
+     RowBox[{"table", "."}]}]}], "\n", "*)"}], "\n", 
+  RowBox[{
+   RowBox[{
+    RowBox[{
+     RowBox[{"TValues", "[", 
+      RowBox[{
+      "j_", ",", " ", "r_Integer", ",", " ", "s_Integer", ",", " ", 
+       "k_Integer"}], "]"}], " ", ":=", "\n", " ", 
+     RowBox[{"Module", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{"t1", ",", " ", "t2", ",", " ", "t3", ",", " ", "t4"}], "}"}],
+        ",", "\n", "  ", 
+       RowBox[{
+        RowBox[{"t1", " ", "=", " ", 
+         RowBox[{
+          RowBox[{"2", " ", 
+           RowBox[{"j", "^", "2"}], " ", "r"}], " ", "+", " ", 
+          RowBox[{"2", " ", "j", " ", "k", " ", "r"}], " ", "+", " ", 
+          RowBox[{"j", " ", "r"}], " ", "-", " ", 
+          RowBox[{"2", " ", "j", " ", "s"}]}]}], ";", "\n", "  ", 
+        RowBox[{"t2", " ", "=", " ", 
+         RowBox[{"t1", " ", "+", " ", 
+          RowBox[{"4", " ", "j", " ", "s"}], " ", "+", " ", 
+          RowBox[{"2", " ", "k", " ", "s"}], " ", "+", " ", "s"}]}], ";", 
+        "\n", "  ", 
+        RowBox[{"t3", " ", "=", " ", 
+         RowBox[{
+          RowBox[{"2", " ", 
+           RowBox[{"j", "^", "2"}], " ", "r"}], " ", "+", " ", 
+          RowBox[{"2", " ", "j", " ", "k", " ", "r"}], " ", "+", " ", 
+          RowBox[{"3", " ", "j", " ", "r"}], " ", "-", " ", 
+          RowBox[{"2", " ", "j", " ", "s"}], " ", "+", " ", 
+          RowBox[{"k", " ", "r"}], " ", "+", " ", "r", " ", "-", " ", "s"}]}],
+         ";", "\n", "  ", 
+        RowBox[{"t4", " ", "=", " ", 
+         RowBox[{"t3", " ", "+", " ", 
+          RowBox[{"4", " ", "j", " ", "s"}], " ", "+", " ", 
+          RowBox[{"2", " ", "k", " ", "s"}], " ", "+", " ", 
+          RowBox[{"3", " ", "s"}]}]}], ";", "\n", "  ", 
+        RowBox[{"{", 
+         RowBox[{"t1", ",", " ", "t2", ",", " ", "t3", ",", " ", "t4"}], 
+         "}"}]}]}], "\n", " ", "]"}]}], ";"}], "\n", "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"FullBlockSum", "[", 
+      RowBox[{
+      "polynomial_", ",", " ", "variable_", ",", " ", "block_", ",", " ", 
+       "r_Integer", ",", " ", "s_Integer", ",", "\n", "   ", "k_Integer"}], 
+      "]"}], " ", ":=", "\n", " ", 
+     RowBox[{"Expand", "@", 
+      RowBox[{"Sum", "[", "\n", "   ", 
+       RowBox[{
+        RowBox[{"With", "[", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{"t", " ", "=", " ", 
+            RowBox[{"TValues", "[", 
+             RowBox[{"j", ",", " ", "r", ",", " ", "s", ",", " ", "k"}], 
+             "]"}]}], "}"}], ",", "\n", "    ", 
+          RowBox[{
+           RowBox[{"polynomial", "[", 
+            RowBox[{"variable", " ", "-", " ", 
+             RowBox[{"t", "[", 
+              RowBox[{"[", "1", "]"}], "]"}]}], "]"}], " ", "-", " ", 
+           RowBox[{"polynomial", "[", 
+            RowBox[{"variable", " ", "-", " ", 
+             RowBox[{"t", "[", 
+              RowBox[{"[", "2", "]"}], "]"}]}], "]"}], " ", "-", "\n", 
+           "     ", 
+           RowBox[{"polynomial", "[", 
+            RowBox[{"variable", " ", "-", " ", 
+             RowBox[{"t", "[", 
+              RowBox[{"[", "3", "]"}], "]"}]}], "]"}], " ", "+", " ", 
+           RowBox[{"polynomial", "[", 
+            RowBox[{"variable", " ", "-", " ", 
+             RowBox[{"t", "[", 
+              RowBox[{"[", "4", "]"}], "]"}]}], "]"}]}]}], "\n", "   ", "]"}],
+         ",", "\n", "   ", 
+        RowBox[{"{", 
+         RowBox[{"j", ",", " ", "0", ",", " ", 
+          RowBox[{"block", " ", "-", " ", "1"}]}], "}"}]}], "\n", "  ", 
+       "]"}]}]}], ";"}], "\n", "\n", 
+   RowBox[{"(*", "\n", "  ", 
+    RowBox[{
+     RowBox[{"The", " ", "four", " ", "lower", " ", "functions", " ", "L0"}], 
+     ",", " ", "L1", ",", " ", "L2", ",", " ", 
+     RowBox[{"L3", " ", "represent", " ", "C_", 
+      RowBox[{"{", 
+       RowBox[{"j", ",", "d"}], "}"}]}], ",", " ", 
+     RowBox[{"D_", 
+      RowBox[{"{", 
+       RowBox[{"j", ",", "d"}], "}"}], " ", "or", " ", "E_", 
+      RowBox[{"{", 
+       RowBox[{"j", ",", "d"}], "}"}]}], ",", " ", 
+     RowBox[{"according", " ", "to", " ", "the", " ", "chosen", " ", 
+      RowBox[{"polynomial", ".", " ", "The"}], " ", "supplied", " ", 
+      "periodic", " ", "envelope", " ", "gives", " ", "valid", " ", 
+      "rational", " ", "lower", " ", 
+      RowBox[{"bounds", "."}]}]}], "\n", "*)"}], "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"LowerExpressions", "[", 
+      RowBox[{
+      "polynomial_", ",", " ", "epsilonMin_", ",", " ", "epsilonMax_", ",", 
+       " ", "variable_", ",", " ", "block_", ",", "\n", "   ", "r_Integer", ",",
+        " ", "s_Integer", ",", " ", "k_Integer"}], "]"}], " ", ":=", "\n", 
+     " ", 
+     RowBox[{"Module", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+        "t", ",", " ", "jump", ",", " ", "l0", ",", " ", "l1", ",", " ", "l2",
+          ",", " ", "l3"}], "}"}], ",", "\n", "  ", 
+       RowBox[{
+        RowBox[{"t", " ", "=", " ", 
+         RowBox[{"TValues", "[", 
+          RowBox[{"block", ",", " ", "r", ",", " ", "s", ",", " ", "k"}], 
+          "]"}]}], ";", "\n", "  ", 
+        RowBox[{"jump", " ", "=", " ", 
+         RowBox[{"epsilonMax", " ", "-", " ", "epsilonMin"}]}], ";", "\n", 
+        "  ", 
+        RowBox[{"l0", " ", "=", " ", 
+         RowBox[{"Expand", "[", 
+          RowBox[{
+           RowBox[{"FullBlockSum", "[", 
+            RowBox[{
+            "polynomial", ",", " ", "variable", ",", " ", "block", ",", " ", 
+             "r", ",", " ", "s", ",", " ", "k"}], "]"}], " ", "-", "\n", 
+           "      ", 
+           RowBox[{"2", " ", "block", " ", "jump"}]}], "]"}]}], ";", "\n", 
+        "  ", 
+        RowBox[{"l1", " ", "=", " ", 
+         RowBox[{"Expand", "[", 
+          RowBox[{"l0", " ", "+", " ", 
+           RowBox[{"polynomial", "[", 
+            RowBox[{"variable", " ", "-", " ", 
+             RowBox[{"t", "[", 
+              RowBox[{"[", "1", "]"}], "]"}]}], "]"}], " ", "+", " ", 
+           "epsilonMin"}], "]"}]}], ";", "\n", "  ", 
+        RowBox[{"l2", " ", "=", " ", 
+         RowBox[{"Expand", "[", 
+          RowBox[{"l0", " ", "+", " ", 
+           RowBox[{"polynomial", "[", 
+            RowBox[{"variable", " ", "-", " ", 
+             RowBox[{"t", "[", 
+              RowBox[{"[", "1", "]"}], "]"}]}], "]"}], " ", "-", "\n", 
+           "      ", 
+           RowBox[{"polynomial", "[", 
+            RowBox[{"variable", " ", "-", " ", 
+             RowBox[{"t", "[", 
+              RowBox[{"[", "2", "]"}], "]"}]}], "]"}], " ", "-", " ", 
+           "jump"}], "]"}]}], ";", "\n", "  ", 
+        RowBox[{"l3", " ", "=", " ", 
+         RowBox[{"Expand", "[", 
+          RowBox[{"l0", " ", "+", " ", 
+           RowBox[{"polynomial", "[", 
+            RowBox[{"variable", " ", "-", " ", 
+             RowBox[{"t", "[", 
+              RowBox[{"[", "1", "]"}], "]"}]}], "]"}], " ", "-", "\n", 
+           "      ", 
+           RowBox[{"polynomial", "[", 
+            RowBox[{"variable", " ", "-", " ", 
+             RowBox[{"t", "[", 
+              RowBox[{"[", "2", "]"}], "]"}]}], "]"}], " ", "-", " ", 
+           RowBox[{"polynomial", "[", 
+            RowBox[{"variable", " ", "-", " ", 
+             RowBox[{"t", "[", 
+              RowBox[{"[", "3", "]"}], "]"}]}], "]"}], " ", "+", "\n", 
+           "      ", "epsilonMin", " ", "-", " ", 
+           RowBox[{"2", " ", "epsilonMax"}]}], "]"}]}], ";", "\n", "  ", 
+        RowBox[{"<|", 
+         RowBox[{
+          RowBox[{"\"\<L0\>\"", " ", "->", " ", "l0"}], ",", " ", 
+          RowBox[{"\"\<L1\>\"", " ", "->", " ", "l1"}], ",", " ", 
+          RowBox[{"\"\<L2\>\"", " ", "->", " ", "l2"}], ",", " ", 
+          RowBox[{"\"\<L3\>\"", " ", "->", " ", "l3"}]}], "|>"}]}]}], "\n", 
+      " ", "]"}]}], ";"}], "\n", "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"QuadraticVertexValue", "[", 
+      RowBox[{"expression_", ",", " ", "variable_"}], "]"}], " ", ":=", "\n", 
+     " ", 
+     RowBox[{"Module", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{"a", ",", " ", "b"}], "}"}], ",", "\n", "  ", 
+       RowBox[{
+        RowBox[{"a", " ", "=", " ", 
+         RowBox[{"Coefficient", "[", 
+          RowBox[{"expression", ",", " ", "variable", ",", " ", "2"}], 
+          "]"}]}], ";", "\n", "  ", 
+        RowBox[{"b", " ", "=", " ", 
+         RowBox[{"Coefficient", "[", 
+          RowBox[{"expression", ",", " ", "variable", ",", " ", "1"}], 
+          "]"}]}], ";", "\n", "  ", 
+        RowBox[{"FullSimplify", "[", 
+         RowBox[{"expression", " ", "/.", " ", 
+          RowBox[{"variable", " ", "->", " ", 
+           RowBox[{
+            RowBox[{"-", "b"}], "/", 
+            RowBox[{"(", 
+             RowBox[{"2", " ", "a"}], ")"}]}]}]}], "]"}]}]}], "\n", " ", 
+      "]"}]}], ";"}], "\n", "\n", 
+   RowBox[{"(*", "\n", "  ", 
+    RowBox[{
+     RowBox[{"The", " ", "four"}], "-", 
+     RowBox[{
+     "part", " ", "routine", " ", "gives", " ", "the", " ", "nine", " ", 
+      "tests", " ", "in", " ", "Section", " ", "3.", " ", "The", " ", 
+      "triple", " ", "routine", " ", "retains", " ", "the", " ", "five", " ", 
+      "tests", " ", "required", " ", "in", " ", "Section", " ", "4", " ", 
+      "and", " ", "the", " ", "additional", " ", "left"}], "-", 
+     RowBox[{"endpoint", " ", "check", " ", 
+      RowBox[{"L1left", "."}]}]}], "\n", "*)"}], "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"FourTestValuesAtBlock", "[", 
+      RowBox[{
+      "polynomial_", ",", " ", "extrema_Association", ",", " ", "r_Integer", ",",
+        "\n", "   ", "s_Integer", ",", " ", "k_Integer", ",", " ", 
+       RowBox[{"block_Integer", "?", "NonNegative"}]}], "]"}], " ", ":=", 
+     "\n", " ", 
+     RowBox[{"Module", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+        "lower", ",", " ", "t", ",", " ", "tPrevious", ",", " ", "d0", ",", 
+         " ", "d1", ",", " ", "d2", ",", " ", "d3"}], "}"}], ",", "\n", "  ", 
+       RowBox[{
+        RowBox[{"lower", " ", "=", " ", 
+         RowBox[{"LowerExpressions", "[", 
+          RowBox[{"polynomial", ",", " ", 
+           RowBox[{"extrema", "[", "\"\<EpsilonMin\>\"", "]"}], ",", "\n", 
+           "    ", 
+           RowBox[{"extrema", "[", "\"\<EpsilonMax\>\"", "]"}], ",", " ", "n",
+            ",", " ", "block", ",", " ", "r", ",", " ", "s", ",", " ", "k"}], 
+          "]"}]}], ";", "\n", "  ", 
+        RowBox[{"t", " ", "=", " ", 
+         RowBox[{"TValues", "[", 
+          RowBox[{"block", ",", " ", "r", ",", " ", "s", ",", " ", "k"}], 
+          "]"}]}], ";", "\n", "  ", 
+        RowBox[{"tPrevious", " ", "=", " ", 
+         RowBox[{"TValues", "[", 
+          RowBox[{
+           RowBox[{"block", " ", "-", " ", "1"}], ",", " ", "r", ",", " ", 
+           "s", ",", " ", "k"}], "]"}]}], ";", "\n", "  ", 
+        RowBox[{"d0", " ", "=", " ", 
+         RowBox[{"D", "[", 
+          RowBox[{
+           RowBox[{"lower", "[", "\"\<L0\>\"", "]"}], ",", " ", "n"}], 
+          "]"}]}], ";", "\n", "  ", 
+        RowBox[{"d1", " ", "=", " ", 
+         RowBox[{"D", "[", 
+          RowBox[{
+           RowBox[{"lower", "[", "\"\<L1\>\"", "]"}], ",", " ", "n"}], 
+          "]"}]}], ";", "\n", "  ", 
+        RowBox[{"d2", " ", "=", " ", 
+         RowBox[{"D", "[", 
+          RowBox[{
+           RowBox[{"lower", "[", "\"\<L2\>\"", "]"}], ",", " ", "n"}], 
+          "]"}]}], ";", "\n", "  ", 
+        RowBox[{"d3", " ", "=", " ", 
+         RowBox[{"D", "[", 
+          RowBox[{
+           RowBox[{"lower", "[", "\"\<L3\>\"", "]"}], ",", " ", "n"}], 
+          "]"}]}], ";", "\n", "  ", 
+        RowBox[{"Map", "[", 
+         RowBox[{"FullSimplify", ",", "\n", "   ", 
+          RowBox[{"<|", "\n", "    ", 
+           RowBox[{
+            RowBox[{"\"\<F0\>\"", " ", "->", " ", 
+             RowBox[{"(", 
+              RowBox[{
+               RowBox[{"lower", "[", "\"\<L0\>\"", "]"}], " ", "/.", " ", 
+               RowBox[{"n", " ", "->", " ", 
+                RowBox[{"tPrevious", "[", 
+                 RowBox[{"[", "4", "]"}], "]"}]}]}], ")"}]}], ",", "\n", 
+            "    ", 
+            RowBox[{"\"\<F1\>\"", " ", "->", " ", 
+             RowBox[{"(", 
+              RowBox[{
+               RowBox[{"lower", "[", "\"\<L1\>\"", "]"}], " ", "/.", " ", 
+               RowBox[{"n", " ", "->", " ", 
+                RowBox[{"t", "[", 
+                 RowBox[{"[", "1", "]"}], "]"}]}]}], ")"}]}], ",", "\n", 
+            "    ", 
+            RowBox[{"\"\<F2\>\"", " ", "->", " ", 
+             RowBox[{"(", 
+              RowBox[{
+               RowBox[{"lower", "[", "\"\<L2\>\"", "]"}], " ", "/.", " ", 
+               RowBox[{"n", " ", "->", " ", 
+                RowBox[{"t", "[", 
+                 RowBox[{"[", "2", "]"}], "]"}]}]}], ")"}]}], ",", "\n", 
+            "    ", 
+            RowBox[{"\"\<F3\>\"", " ", "->", " ", 
+             RowBox[{"(", 
+              RowBox[{
+               RowBox[{"lower", "[", "\"\<L3\>\"", "]"}], " ", "/.", " ", 
+               RowBox[{"n", " ", "->", " ", 
+                RowBox[{"t", "[", 
+                 RowBox[{"[", "3", "]"}], "]"}]}]}], ")"}]}], ",", "\n", 
+            "    ", 
+            RowBox[{"\"\<D0\>\"", " ", "->", " ", 
+             RowBox[{"(", 
+              RowBox[{"d0", " ", "/.", " ", 
+               RowBox[{"n", " ", "->", " ", 
+                RowBox[{"t", "[", 
+                 RowBox[{"[", "1", "]"}], "]"}]}]}], ")"}]}], ",", "\n", 
+            "    ", 
+            RowBox[{"\"\<D1\>\"", " ", "->", " ", 
+             RowBox[{"QuadraticVertexValue", "[", 
+              RowBox[{"d1", ",", " ", "n"}], "]"}]}], ",", "\n", "    ", 
+            RowBox[{"\"\<D2\>\"", " ", "->", " ", 
+             RowBox[{"(", 
+              RowBox[{"d2", " ", "/.", " ", 
+               RowBox[{"n", " ", "->", " ", 
+                RowBox[{"t", "[", 
+                 RowBox[{"[", "2", "]"}], "]"}]}]}], ")"}]}], ",", "\n", 
+            "    ", 
+            RowBox[{"\"\<D3minus\>\"", " ", "->", " ", 
+             RowBox[{"(", 
+              RowBox[{"d3", " ", "/.", " ", 
+               RowBox[{"n", " ", "->", " ", 
+                RowBox[{"t", "[", 
+                 RowBox[{"[", "3", "]"}], "]"}]}]}], ")"}]}], ",", "\n", 
+            "    ", 
+            RowBox[{"\"\<D3plus\>\"", " ", "->", " ", 
+             RowBox[{"(", 
+              RowBox[{"d3", " ", "/.", " ", 
+               RowBox[{"n", " ", "->", " ", 
+                RowBox[{"t", "[", 
+                 RowBox[{"[", "4", "]"}], "]"}]}]}], ")"}]}]}], "\n", "   ", 
+           "|>"}]}], "\n", "  ", "]"}]}]}], "\n", " ", "]"}]}], ";"}], "\n", "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"TripleTestValuesAtBlock", "[", 
+      RowBox[{
+      "polynomial_", ",", " ", "extrema_Association", ",", " ", "r_Integer", ",",
+        "\n", "   ", "s_Integer", ",", " ", "k_Integer", ",", " ", 
+       RowBox[{"block_Integer", "?", "NonNegative"}]}], "]"}], " ", ":=", 
+     "\n", " ", 
+     RowBox[{"Module", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{"lower", ",", " ", "t"}], "}"}], ",", "\n", "  ", 
+       RowBox[{
+        RowBox[{"lower", " ", "=", " ", 
+         RowBox[{"LowerExpressions", "[", 
+          RowBox[{"polynomial", ",", " ", 
+           RowBox[{"extrema", "[", "\"\<EpsilonMin\>\"", "]"}], ",", "\n", 
+           "    ", 
+           RowBox[{"extrema", "[", "\"\<EpsilonMax\>\"", "]"}], ",", " ", "n",
+            ",", " ", "block", ",", " ", "r", ",", " ", "s", ",", " ", "k"}], 
+          "]"}]}], ";", "\n", "  ", 
+        RowBox[{"t", " ", "=", " ", 
+         RowBox[{"TValues", "[", 
+          RowBox[{"block", ",", " ", "r", ",", " ", "s", ",", " ", "k"}], 
+          "]"}]}], ";", "\n", "  ", 
+        RowBox[{"Map", "[", 
+         RowBox[{"FullSimplify", ",", "\n", "   ", 
+          RowBox[{"<|", "\n", "    ", 
+           RowBox[{
+            RowBox[{"\"\<L0right\>\"", " ", "->", " ", 
+             RowBox[{"(", 
+              RowBox[{
+               RowBox[{"lower", "[", "\"\<L0\>\"", "]"}], " ", "/.", " ", 
+               RowBox[{"n", " ", "->", " ", 
+                RowBox[{"t", "[", 
+                 RowBox[{"[", "1", "]"}], "]"}]}]}], ")"}]}], ",", "\n", 
+            "    ", 
+            RowBox[{"\"\<L1left\>\"", " ", "->", " ", 
+             RowBox[{"(", 
+              RowBox[{
+               RowBox[{"lower", "[", "\"\<L1\>\"", "]"}], " ", "/.", " ", 
+               RowBox[{"n", " ", "->", " ", 
+                RowBox[{"t", "[", 
+                 RowBox[{"[", "1", "]"}], "]"}]}]}], ")"}]}], ",", "\n", 
+            "    ", 
+            RowBox[{"\"\<L1vertex\>\"", " ", "->", " ", 
+             RowBox[{"QuadraticVertexValue", "[", 
+              RowBox[{
+               RowBox[{"lower", "[", "\"\<L1\>\"", "]"}], ",", " ", "n"}], 
+              "]"}]}], ",", "\n", "    ", 
+            RowBox[{"\"\<L2left\>\"", " ", "->", " ", 
+             RowBox[{"(", 
+              RowBox[{
+               RowBox[{"lower", "[", "\"\<L2\>\"", "]"}], " ", "/.", " ", 
+               RowBox[{"n", " ", "->", " ", 
+                RowBox[{"t", "[", 
+                 RowBox[{"[", "2", "]"}], "]"}]}]}], ")"}]}], ",", "\n", 
+            "    ", 
+            RowBox[{"\"\<L3left\>\"", " ", "->", " ", 
+             RowBox[{"(", 
+              RowBox[{
+               RowBox[{"lower", "[", "\"\<L3\>\"", "]"}], " ", "/.", " ", 
+               RowBox[{"n", " ", "->", " ", 
+                RowBox[{"t", "[", 
+                 RowBox[{"[", "3", "]"}], "]"}]}]}], ")"}]}], ",", "\n", 
+            "    ", 
+            RowBox[{"\"\<L3right\>\"", " ", "->", " ", 
+             RowBox[{"(", 
+              RowBox[{
+               RowBox[{"lower", "[", "\"\<L3\>\"", "]"}], " ", "/.", " ", 
+               RowBox[{"n", " ", "->", " ", 
+                RowBox[{"t", "[", 
+                 RowBox[{"[", "4", "]"}], "]"}]}]}], ")"}]}]}], "\n", "   ", 
+           "|>"}]}], "\n", "  ", "]"}]}]}], "\n", " ", "]"}]}], ";"}], "\n", 
+   "\n", 
+   RowBox[{"(*", "\n", "  ", 
+    RowBox[{
+     RowBox[{
+     "Every", " ", "test", " ", "has", " ", "degree", " ", "at", " ", "most", 
+      " ", "four", " ", "in", " ", 
+      RowBox[{"p", ".", " ", "Exact"}], " ", "interpolation", " ", "is", " ", 
+      "checked", " ", "at", " ", "three", " ", "unused", " ", "integer", " ", 
+      "points"}], ";", " ", 
+     RowBox[{"no", " ", "numerical", " ", "fit", " ", "is", " ", 
+      RowBox[{"used", "."}]}]}], "\n", "*)"}], "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"ExactTestPolynomials", "[", "valueFunction_", "]"}], " ", ":=", 
+     "\n", " ", 
+     RowBox[{"Module", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+        "names", ",", " ", "polynomials", ",", " ", "checkPoints", ",", " ", 
+         "valueTables"}], "}"}], ",", "\n", "\n", "  ", 
+       RowBox[{
+        RowBox[{"valueTables", " ", "=", " ", 
+         RowBox[{"Table", "[", 
+          RowBox[{
+           RowBox[{"valueFunction", "[", "block", "]"}], ",", " ", 
+           RowBox[{"{", 
+            RowBox[{"block", ",", " ", "0", ",", " ", "9"}], "}"}]}], "]"}]}],
+         ";", "\n", "  ", 
+        RowBox[{"names", " ", "=", " ", 
+         RowBox[{"Keys", "[", 
+          RowBox[{"First", "[", "valueTables", "]"}], "]"}]}], ";", "\n", 
+        "  ", 
+        RowBox[{"polynomials", " ", "=", " ", 
+         RowBox[{"Association", " ", "@@", " ", 
+          RowBox[{"Thread", "[", "\n", "    ", 
+           RowBox[{"names", " ", "->", " ", 
+            RowBox[{"Table", "[", "\n", "     ", 
+             RowBox[{
+              RowBox[{"LagrangePolynomial", "[", "\n", "       ", 
+               RowBox[{"Table", "[", 
+                RowBox[{
+                 RowBox[{
+                  RowBox[{"valueTables", "[", 
+                   RowBox[{"[", 
+                    RowBox[{"block", " ", "+", " ", "1"}], "]"}], "]"}], "[", 
+                  "name", "]"}], ",", " ", 
+                 RowBox[{"{", 
+                  RowBox[{"block", ",", " ", "0", ",", " ", "6"}], "}"}]}], 
+                "]"}], "]"}], ",", "\n", "     ", 
+              RowBox[{"{", 
+               RowBox[{"name", ",", " ", "names"}], "}"}]}], "\n", "    ", 
+             "]"}]}], "\n", "   ", "]"}]}]}], ";", "\n", "  ", 
+        RowBox[{"checkPoints", " ", "=", " ", 
+         RowBox[{"Range", "[", 
+          RowBox[{"7", ",", " ", "9"}], "]"}]}], ";", "\n", "  ", 
+        RowBox[{"If", "[", "\n", "   ", 
+         RowBox[{
+          RowBox[{"!", " ", 
+           RowBox[{"And", " ", "@@", " ", 
+            RowBox[{"Flatten", "@", 
+             RowBox[{"Table", "[", "\n", "      ", 
+              RowBox[{
+               RowBox[{"FullSimplify", "[", 
+                RowBox[{
+                 RowBox[{"(", 
+                  RowBox[{
+                   RowBox[{"polynomials", "[", "name", "]"}], " ", "/.", " ", 
+                   RowBox[{"p", " ", "->", " ", "block"}]}], ")"}], " ", "==",
+                  "\n", "        ", 
+                 RowBox[{
+                  RowBox[{"valueTables", "[", 
+                   RowBox[{"[", 
+                    RowBox[{"block", " ", "+", " ", "1"}], "]"}], "]"}], "[", 
+                  "name", "]"}]}], "]"}], ",", "\n", "      ", 
+               RowBox[{"{", 
+                RowBox[{"name", ",", " ", "names"}], "}"}], ",", " ", 
+               RowBox[{"{", 
+                RowBox[{"block", ",", " ", "checkPoints"}], "}"}]}], "\n", 
+              "     ", "]"}]}]}]}], ",", "\n", "   ", 
+          RowBox[{"Return", "[", 
+           RowBox[{"Failure", "[", 
+            RowBox[{"\"\<InterpolationCheckFailed\>\"", ",", " ", 
+             RowBox[{"<|", "|>"}]}], "]"}], "]"}]}], "\n", "  ", "]"}], ";", 
+        "\n", "  ", "polynomials"}]}], "\n", " ", "]"}]}], ";"}], "\n", "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"LagrangePolynomial", "[", "values_List", "]"}], " ", ":=", "\n",
+      " ", 
+     RowBox[{"Module", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{"degree", " ", "=", " ", 
+         RowBox[{
+          RowBox[{"Length", "[", "values", "]"}], " ", "-", " ", "1"}]}], 
+        "}"}], ",", "\n", "  ", 
+       RowBox[{"Expand", "@", 
+        RowBox[{"Total", "@", 
+         RowBox[{"Table", "[", "\n", "    ", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"values", "[", 
+             RowBox[{"[", 
+              RowBox[{"i", " ", "+", " ", "1"}], "]"}], "]"}], " ", 
+            RowBox[{"Times", " ", "@@", "\n", "      ", 
+             RowBox[{"Table", "[", 
+              RowBox[{
+               RowBox[{"If", "[", 
+                RowBox[{
+                 RowBox[{"j", " ", "==", " ", "i"}], ",", " ", "1", ",", " ", 
+                 RowBox[{
+                  RowBox[{"(", 
+                   RowBox[{"p", " ", "-", " ", "j"}], ")"}], "/", 
+                  RowBox[{"(", 
+                   RowBox[{"i", " ", "-", " ", "j"}], ")"}]}]}], "]"}], ",", 
+               " ", 
+               RowBox[{"{", 
+                RowBox[{"j", ",", " ", "0", ",", " ", "degree"}], "}"}]}], 
+              "]"}]}]}], ",", "\n", "    ", 
+           RowBox[{"{", 
+            RowBox[{"i", ",", " ", "0", ",", " ", "degree"}], "}"}]}], "\n", 
+          "   ", "]"}]}]}]}], "\n", " ", "]"}]}], ";"}], "\n", "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"FourTestPolynomials", "[", 
+      RowBox[{
+      "polynomial_", ",", " ", "extrema_Association", ",", " ", "r_Integer", ",",
+        "\n", "   ", "s_Integer", ",", " ", "k_Integer"}], "]"}], " ", ":=", 
+     "\n", " ", 
+     RowBox[{"ExactTestPolynomials", "[", "\n", "  ", 
+      RowBox[{"Function", "[", 
+       RowBox[{
+        RowBox[{"{", "block", "}"}], ",", "\n", "   ", 
+        RowBox[{"FourTestValuesAtBlock", "[", 
+         RowBox[{
+         "polynomial", ",", " ", "extrema", ",", " ", "r", ",", " ", "s", ",",
+           " ", "k", ",", " ", "block"}], "]"}]}], "]"}], "\n", " ", "]"}]}], 
+    ";"}], "\n", "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"TripleTestPolynomials", "[", 
+      RowBox[{
+      "polynomial_", ",", " ", "extrema_Association", ",", " ", "r_Integer", ",",
+        "\n", "   ", "s_Integer", ",", " ", "k_Integer"}], "]"}], " ", ":=", 
+     "\n", " ", 
+     RowBox[{"ExactTestPolynomials", "[", "\n", "  ", 
+      RowBox[{"Function", "[", 
+       RowBox[{
+        RowBox[{"{", "block", "}"}], ",", "\n", "   ", 
+        RowBox[{"TripleTestValuesAtBlock", "[", 
+         RowBox[{
+         "polynomial", ",", " ", "extrema", ",", " ", "r", ",", " ", "s", ",",
+           " ", "k", ",", " ", "block"}], "]"}]}], "]"}], "\n", " ", "]"}]}], 
+    ";"}], "\n", "\n", 
+   RowBox[{"(*", "\n", "  ", 
+    RowBox[{
+    "The", " ", "safe", " ", "integer", " ", "p0", " ", "lies", " ", 
+     "strictly", " ", "to", " ", "the", " ", "right", " ", "of", " ", "every",
+      " ", "relevant", " ", "nonnegative", " ", 
+     RowBox[{"root", ".", " ", "The"}], " ", "selected", " ", "theoretical", " ",
+      "envelope", " ", "can", " ", "give", " ", "a", " ", "larger", " ", 
+     "sufficient", " ", "threshold", " ", "than", " ", "the", " ", "exact", " ",
+      "periodic", " ", 
+     RowBox[{"extrema", "."}]}], "\n", "*)"}], "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"LargestNonnegativeRootCeiling", "[", "polynomial_", "]"}], " ", 
+     ":=", "\n", " ", 
+     RowBox[{"Module", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+        "solutions", ",", " ", "roots", ",", " ", "nonnegativeRoots"}], "}"}],
+        ",", "\n", "  ", 
+       RowBox[{
+        RowBox[{"solutions", " ", "=", " ", 
+         RowBox[{"Solve", "[", 
+          RowBox[{
+           RowBox[{"polynomial", " ", "==", " ", "0"}], ",", " ", "p", ",", 
+           " ", "Reals"}], "]"}]}], ";", "\n", "  ", 
+        RowBox[{"roots", " ", "=", " ", 
+         RowBox[{"If", "[", 
+          RowBox[{
+           RowBox[{"solutions", " ", "===", " ", 
+            RowBox[{"{", "}"}]}], ",", " ", 
+           RowBox[{"{", "}"}], ",", " ", 
+           RowBox[{"p", " ", "/.", " ", "solutions"}]}], "]"}]}], ";", "\n", 
+        "  ", 
+        RowBox[{"nonnegativeRoots", " ", "=", "\n", "    ", 
+         RowBox[{"Select", "[", 
+          RowBox[{"roots", ",", " ", 
+           RowBox[{
+            RowBox[{"TrueQ", "[", 
+             RowBox[{"FullSimplify", "[", 
+              RowBox[{"#", " ", ">=", " ", "0"}], "]"}], "]"}], " ", "&"}]}], 
+          "]"}]}], ";", "\n", "  ", 
+        RowBox[{"If", "[", 
+         RowBox[{
+          RowBox[{"nonnegativeRoots", " ", "===", " ", 
+           RowBox[{"{", "}"}]}], ",", " ", "0", ",", " ", 
+          RowBox[{"Ceiling", "[", 
+           RowBox[{"Max", " ", "@@", " ", "nonnegativeRoots"}], "]"}]}], 
+         "]"}]}]}], "\n", " ", "]"}]}], ";"}], "\n", "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"SafeThreshold", "[", "tests_Association", "]"}], " ", ":=", 
+     "\n", " ", 
+     RowBox[{"Module", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{"ceilings", ",", " ", "p0"}], "}"}], ",", "\n", "  ", 
+       RowBox[{
+        RowBox[{"ceilings", " ", "=", " ", 
+         RowBox[{"Map", "[", 
+          RowBox[{"LargestNonnegativeRootCeiling", ",", " ", "tests"}], 
+          "]"}]}], ";", "\n", "  ", 
+        RowBox[{"p0", " ", "=", " ", 
+         RowBox[{"Max", "[", 
+          RowBox[{"1", ",", " ", 
+           RowBox[{"Sequence", " ", "@@", " ", 
+            RowBox[{"Values", "[", "ceilings", "]"}]}]}], "]"}]}], ";", "\n", 
+        "  ", 
+        RowBox[{"While", "[", "\n", "   ", 
+         RowBox[{
+          RowBox[{"!", " ", 
+           RowBox[{"And", " ", "@@", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{
+               RowBox[{"TrueQ", "[", 
+                RowBox[{"FullSimplify", "[", 
+                 RowBox[{"#", " ", ">", " ", "0"}], "]"}], "]"}], " ", "&"}], 
+              " ", "/@", "\n", "       ", 
+              RowBox[{"(", 
+               RowBox[{
+                RowBox[{"Values", "[", "tests", "]"}], " ", "/.", " ", 
+                RowBox[{"p", " ", "->", " ", "p0"}]}], ")"}]}], ")"}]}]}], ",",
+           "\n", "   ", 
+          RowBox[{"p0", "++"}]}], "\n", "  ", "]"}], ";", "\n", "  ", 
+        RowBox[{"<|", 
+         RowBox[{
+          RowBox[{"\"\<P0\>\"", " ", "->", " ", "p0"}], ",", " ", 
+          RowBox[{"\"\<RootCeilings\>\"", " ", "->", " ", "ceilings"}]}], 
+         "|>"}]}]}], "\n", " ", "]"}]}], ";"}], "\n", "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"MercaFourSystem", "[", 
+      RowBox[{"r_Integer", ",", " ", "s_Integer", ",", " ", "k_Integer"}], 
+      "]"}], " ", ":=", "\n", " ", 
+     RowBox[{"Module", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+        "parts", ",", " ", "polynomial", ",", " ", "extrema", ",", " ", 
+         "tests", ",", " ", "threshold"}], "}"}], ",", "\n", "  ", 
+       RowBox[{
+        RowBox[{"If", "[", 
+         RowBox[{
+          RowBox[{"!", 
+           RowBox[{"(", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"GCD", "[", 
+               RowBox[{"r", ",", " ", "s"}], "]"}], " ", "==", " ", "1"}], 
+             " ", "&&", " ", 
+             RowBox[{"1", " ", "<=", " ", "s", " ", "<", " ", 
+              RowBox[{"r", "/", "2"}]}], " ", "&&", " ", 
+             RowBox[{"k", " ", ">=", " ", "1"}]}], ")"}]}], ",", "\n", "   ", 
+          RowBox[{"Return", "[", 
+           RowBox[{"Failure", "[", 
+            RowBox[{"\"\<BadParameters\>\"", ",", "\n", "     ", 
+             RowBox[{"<|", 
+              
+              RowBox[{"\"\<Requirement\>\"", " ", "->", 
+               " ", "\"\<gcd(r,s)=1, 1<=s<r/2, k>=1\>\""}], "|>"}]}], "]"}], 
+           "]"}]}], "\n", "  ", "]"}], ";", "\n", "  ", 
+        RowBox[{"parts", " ", "=", " ", 
+         RowBox[{"{", 
+          RowBox[{"s", ",", " ", 
+           RowBox[{"r", " ", "-", " ", "s"}], ",", " ", 
+           RowBox[{"r", " ", "+", " ", "s"}], ",", " ", 
+           RowBox[{
+            RowBox[{"2", " ", "r"}], " ", "-", " ", "s"}]}], "}"}]}], ";", 
+        "\n", "  ", 
+        RowBox[{"If", "[", 
+         RowBox[{
+          RowBox[{"!", " ", 
+           RowBox[{"PairwiseCoprimeQ", "[", "parts", "]"}]}], ",", "\n", 
+          "   ", 
+          RowBox[{"Return", "[", 
+           RowBox[{"Failure", "[", 
+            RowBox[{"\"\<FourPartsNotPairwiseCoprime\>\"", ",", " ", 
+             RowBox[{"<|", 
+              RowBox[{"\"\<Parts\>\"", " ", "->", " ", "parts"}], "|>"}]}], 
+            "]"}], "]"}]}], "\n", "  ", "]"}], ";", "\n", "  ", 
+        RowBox[{"polynomial", " ", "=", " ", 
+         RowBox[{"Function", "[", 
+          RowBox[{
+           RowBox[{"{", "x", "}"}], ",", " ", 
+           RowBox[{"P4", "[", 
+            RowBox[{"x", ",", " ", "r", ",", " ", "s"}], "]"}]}], "]"}]}], ";",
+         "\n", "  ", 
+        RowBox[{"extrema", " ", "=", " ", 
+         RowBox[{"GeneralResidueEnvelope", "[", 
+          RowBox[{"parts", ",", " ", "polynomial"}], "]"}]}], ";", "\n", "  ", 
+        RowBox[{"If", "[", 
+         RowBox[{
+          RowBox[{"FailureQ", "[", "extrema", "]"}], ",", " ", 
+          RowBox[{"Return", "[", "extrema", "]"}]}], "]"}], ";", "\n", "  ", 
+        RowBox[{"tests", " ", "=", " ", 
+         RowBox[{"FourTestPolynomials", "[", 
+          RowBox[{
+          "polynomial", ",", " ", "extrema", ",", " ", "r", ",", " ", "s", ",",
+            " ", "k"}], "]"}]}], ";", "\n", "  ", 
+        RowBox[{"threshold", " ", "=", " ", 
+         RowBox[{"SafeThreshold", "[", "tests", "]"}]}], ";", "\n", "  ", 
+        RowBox[{"<|", "\n", "   ", 
+         RowBox[{
+          RowBox[{"\"\<Family\>\"", " ", "->", " ", "\"\<four-part\>\""}], ",",
+           " ", 
+          RowBox[{"\"\<r\>\"", " ", "->", " ", "r"}], ",", " ", 
+          RowBox[{"\"\<s\>\"", " ", "->", " ", "s"}], ",", " ", 
+          RowBox[{"\"\<k\>\"", " ", "->", " ", "k"}], ",", "\n", "   ", 
+          RowBox[{"\"\<Polynomial\>\"", " ", "->", " ", "polynomial"}], ",", 
+          " ", 
+          RowBox[{"\"\<Extrema\>\"", " ", "->", " ", "extrema"}], ",", " ", 
+          RowBox[{"\"\<Tests\>\"", " ", "->", " ", "tests"}], ",", "\n", 
+          "   ", 
+          RowBox[{"\"\<RootCeilings\>\"", " ", "->", " ", 
+           RowBox[{"threshold", "[", "\"\<RootCeilings\>\"", "]"}]}], ",", 
+          "\n", "   ", 
+          RowBox[{"\"\<P0\>\"", " ", "->", " ", 
+           RowBox[{"threshold", "[", "\"\<P0\>\"", "]"}]}], ",", "\n", "   ", 
+          RowBox[{"\"\<nb\>\"", " ", "->", " ", 
+           RowBox[{
+            RowBox[{"TValues", "[", 
+             RowBox[{
+              RowBox[{
+               RowBox[{"threshold", "[", "\"\<P0\>\"", "]"}], " ", "-", " ", 
+               "1"}], ",", " ", "r", ",", " ", "s", ",", " ", "k"}], "]"}], "[", 
+            RowBox[{"[", "4", "]"}], "]"}]}]}], "\n", "  ", "|>"}]}]}], "\n", 
+      " ", "]"}]}], ";"}], "\n", "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"MercaTripleSystem", "[", 
+      RowBox[{"r_Integer", ",", " ", "s_Integer", ",", " ", "k_Integer"}], 
+      "]"}], " ", ":=", "\n", " ", 
+     RowBox[{"Module", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+        "family", ",", " ", "parts", ",", " ", "polynomial", ",", " ", 
+         "extrema", ",", " ", "tests", ",", " ", "threshold"}], "}"}], ",", 
+       "\n", "  ", 
+       RowBox[{
+        RowBox[{"If", "[", 
+         RowBox[{
+          RowBox[{"!", 
+           RowBox[{"(", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"GCD", "[", 
+               RowBox[{"r", ",", " ", "s"}], "]"}], " ", "==", " ", "1"}], 
+             " ", "&&", " ", 
+             RowBox[{"1", " ", "<=", " ", "s", " ", "<", " ", 
+              RowBox[{"r", "/", "2"}]}], " ", "&&", " ", 
+             RowBox[{"k", " ", ">=", " ", "1"}]}], ")"}]}], ",", "\n", "   ", 
+          RowBox[{"Return", "[", 
+           RowBox[{"Failure", "[", 
+            RowBox[{"\"\<BadParameters\>\"", ",", "\n", "     ", 
+             RowBox[{"<|", 
+              
+              RowBox[{"\"\<Requirement\>\"", " ", "->", 
+               " ", "\"\<gcd(r,s)=1, 1<=s<r/2, k>=1\>\""}], "|>"}]}], "]"}], 
+           "]"}]}], "\n", "  ", "]"}], ";", "\n", "  ", 
+        RowBox[{"If", "[", 
+         RowBox[{
+          RowBox[{"EvenQ", "[", "s", "]"}], ",", "\n", "   ", 
+          RowBox[{
+           RowBox[{"family", " ", "=", " ", "\"\<three-part-even-s\>\""}], ";",
+            "\n", "   ", 
+           RowBox[{"parts", " ", "=", " ", 
+            RowBox[{"{", 
+             RowBox[{"s", ",", " ", 
+              RowBox[{"r", " ", "-", " ", "s"}], ",", " ", 
+              RowBox[{"r", " ", "+", " ", "s"}]}], "}"}]}], ";", "\n", "   ", 
+           RowBox[{"polynomial", " ", "=", " ", 
+            RowBox[{"Function", "[", 
+             RowBox[{
+              RowBox[{"{", "x", "}"}], ",", " ", 
+              RowBox[{"PEven", "[", 
+               RowBox[{"x", ",", " ", "r", ",", " ", "s"}], "]"}]}], 
+             "]"}]}]}], ",", "\n", "   ", 
+          RowBox[{
+           RowBox[{"family", " ", "=", " ", "\"\<three-part-odd-s\>\""}], ";",
+            "\n", "   ", 
+           RowBox[{"parts", " ", "=", " ", 
+            RowBox[{"{", 
+             RowBox[{"s", ",", " ", 
+              RowBox[{"r", " ", "-", " ", "s"}], ",", " ", 
+              RowBox[{
+               RowBox[{"2", " ", "r"}], " ", "-", " ", "s"}]}], "}"}]}], ";", 
+           "\n", "   ", 
+           RowBox[{"polynomial", " ", "=", " ", 
+            RowBox[{"Function", "[", 
+             RowBox[{
+              RowBox[{"{", "x", "}"}], ",", " ", 
+              RowBox[{"POdd", "[", 
+               RowBox[{"x", ",", " ", "r", ",", " ", "s"}], "]"}]}], 
+             "]"}]}]}]}], "\n", "  ", "]"}], ";", "\n", "  ", 
+        RowBox[{"extrema", " ", "=", " ", 
+         RowBox[{"GeneralResidueEnvelope", "[", 
+          RowBox[{"parts", ",", " ", "polynomial"}], "]"}]}], ";", "\n", "  ", 
+        RowBox[{"If", "[", 
+         RowBox[{
+          RowBox[{"FailureQ", "[", "extrema", "]"}], ",", " ", 
+          RowBox[{"Return", "[", "extrema", "]"}]}], "]"}], ";", "\n", "  ", 
+        RowBox[{"tests", " ", "=", " ", 
+         RowBox[{"TripleTestPolynomials", "[", 
+          RowBox[{
+          "polynomial", ",", " ", "extrema", ",", " ", "r", ",", " ", "s", ",",
+            " ", "k"}], "]"}]}], ";", "\n", "  ", 
+        RowBox[{"threshold", " ", "=", " ", 
+         RowBox[{"SafeThreshold", "[", "tests", "]"}]}], ";", "\n", "  ", 
+        RowBox[{"<|", "\n", "   ", 
+         RowBox[{
+          RowBox[{"\"\<Family\>\"", " ", "->", " ", "family"}], ",", " ", 
+          RowBox[{"\"\<r\>\"", " ", "->", " ", "r"}], ",", " ", 
+          RowBox[{"\"\<s\>\"", " ", "->", " ", "s"}], ",", " ", 
+          RowBox[{"\"\<k\>\"", " ", "->", " ", "k"}], ",", "\n", "   ", 
+          RowBox[{"\"\<Polynomial\>\"", " ", "->", " ", "polynomial"}], ",", 
+          " ", 
+          RowBox[{"\"\<Extrema\>\"", " ", "->", " ", "extrema"}], ",", " ", 
+          RowBox[{"\"\<Tests\>\"", " ", "->", " ", "tests"}], ",", "\n", 
+          "   ", 
+          RowBox[{"\"\<RootCeilings\>\"", " ", "->", " ", 
+           RowBox[{"threshold", "[", "\"\<RootCeilings\>\"", "]"}]}], ",", 
+          "\n", "   ", 
+          RowBox[{"\"\<P0\>\"", " ", "->", " ", 
+           RowBox[{"threshold", "[", "\"\<P0\>\"", "]"}]}], ",", "\n", "   ", 
+          RowBox[{"\"\<nb\>\"", " ", "->", " ", 
+           RowBox[{
+            RowBox[{"TValues", "[", 
+             RowBox[{
+              RowBox[{
+               RowBox[{"threshold", "[", "\"\<P0\>\"", "]"}], " ", "-", " ", 
+               "1"}], ",", " ", "r", ",", " ", "s", ",", " ", "k"}], "]"}], "[", 
+            RowBox[{"[", "4", "]"}], "]"}]}]}], "\n", "  ", "|>"}]}]}], "\n", 
+      " ", "]"}]}], ";"}], "\n", "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"MercaBoundarySystem", "[", "k_Integer", "]"}], " ", ":=", "\n", 
+     " ", 
+     RowBox[{"Module", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"r", " ", "=", " ", "2"}], ",", " ", 
+         RowBox[{"s", " ", "=", " ", "1"}], ",", " ", "polynomial", ",", " ", 
+         "extrema", ",", " ", "tests", ",", " ", "threshold"}], "}"}], ",", 
+       "\n", "  ", 
+       RowBox[{
+        RowBox[{"If", "[", 
+         RowBox[{
+          RowBox[{"k", " ", "<", " ", "1"}], ",", " ", 
+          RowBox[{"Return", "[", 
+           RowBox[{"Failure", "[", 
+            RowBox[{"\"\<BadParameters\>\"", ",", " ", 
+             RowBox[{"<|", 
+              RowBox[{"\"\<Requirement\>\"", " ", "->", " ", "\"\<k>=1\>\""}],
+               "|>"}]}], "]"}], "]"}]}], "]"}], ";", "\n", "  ", 
+        RowBox[{"polynomial", " ", "=", " ", 
+         RowBox[{"Function", "[", 
+          RowBox[{
+           RowBox[{"{", "x", "}"}], ",", " ", 
+           RowBox[{
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"x", "^", "2"}], " ", "+", " ", 
+              RowBox[{"5", " ", "x"}]}], ")"}], "/", "6"}]}], "]"}]}], ";", 
+        "\n", "  ", 
+        RowBox[{"extrema", " ", "=", " ", 
+         RowBox[{"<|", "\n", "    ", 
+          RowBox[{
+           RowBox[{"\"\<Parts\>\"", " ", "->", " ", 
+            RowBox[{"{", 
+             RowBox[{"1", ",", " ", "1", ",", " ", "3"}], "}"}]}], ",", " ", 
+           RowBox[{"\"\<Period\>\"", " ", "->", " ", "3"}], ",", "\n", "    ", 
+           
+           RowBox[{"\"\<EnvelopeMode\>\"", " ", "->", 
+            " ", "\"\<boundary-exact\>\""}], ",", "\n", "    ", 
+           RowBox[{"\"\<Kappa\>\"", " ", "->", " ", 
+            RowBox[{"Missing", "[", "\"\<NotUsed\>\"", "]"}]}], ",", "\n", 
+           "    ", 
+           RowBox[{"\"\<ResidueRadius\>\"", " ", "->", " ", 
+            RowBox[{"Missing", "[", "\"\<NotUsed\>\"", "]"}]}], ",", "\n", 
+           "    ", 
+           RowBox[{"\"\<EpsilonMin\>\"", " ", "->", " ", 
+            RowBox[{"2", "/", "3"}]}], ",", " ", 
+           RowBox[{"\"\<EpsilonMax\>\"", " ", "->", " ", "1"}], ",", "\n", 
+           "    ", 
+           RowBox[{"\"\<Oscillation\>\"", " ", "->", " ", 
+            RowBox[{"1", "/", "3"}]}], ",", " ", 
+           RowBox[{"\"\<ArgMin\>\"", " ", "->", " ", 
+            RowBox[{"{", "2", "}"}]}], ",", " ", 
+           RowBox[{"\"\<ArgMax\>\"", " ", "->", " ", 
+            RowBox[{"{", 
+             RowBox[{"0", ",", " ", "1"}], "}"}]}]}], "\n", "   ", "|>"}]}], ";",
+         "\n", "  ", 
+        RowBox[{"tests", " ", "=", " ", 
+         RowBox[{"TripleTestPolynomials", "[", 
+          RowBox[{
+          "polynomial", ",", " ", "extrema", ",", " ", "r", ",", " ", "s", ",",
+            " ", "k"}], "]"}]}], ";", "\n", "  ", 
+        RowBox[{"threshold", " ", "=", " ", 
+         RowBox[{"SafeThreshold", "[", "tests", "]"}]}], ";", "\n", "  ", 
+        RowBox[{"<|", "\n", "   ", 
+         RowBox[{
+          
+          RowBox[{"\"\<Family\>\"", " ", "->", 
+           " ", "\"\<boundary-r2-s1\>\""}], ",", " ", 
+          RowBox[{"\"\<r\>\"", " ", "->", " ", "r"}], ",", " ", 
+          RowBox[{"\"\<s\>\"", " ", "->", " ", "s"}], ",", " ", 
+          RowBox[{"\"\<k\>\"", " ", "->", " ", "k"}], ",", "\n", "   ", 
+          RowBox[{"\"\<Polynomial\>\"", " ", "->", " ", "polynomial"}], ",", 
+          " ", 
+          RowBox[{"\"\<Extrema\>\"", " ", "->", " ", "extrema"}], ",", " ", 
+          RowBox[{"\"\<Tests\>\"", " ", "->", " ", "tests"}], ",", "\n", 
+          "   ", 
+          RowBox[{"\"\<RootCeilings\>\"", " ", "->", " ", 
+           RowBox[{"threshold", "[", "\"\<RootCeilings\>\"", "]"}]}], ",", 
+          "\n", "   ", 
+          RowBox[{"\"\<P0\>\"", " ", "->", " ", 
+           RowBox[{"threshold", "[", "\"\<P0\>\"", "]"}]}], ",", "\n", "   ", 
+          RowBox[{"\"\<nb\>\"", " ", "->", " ", 
+           RowBox[{
+            RowBox[{"TValues", "[", 
+             RowBox[{
+              RowBox[{
+               RowBox[{"threshold", "[", "\"\<P0\>\"", "]"}], " ", "-", " ", 
+               "1"}], ",", " ", "r", ",", " ", "s", ",", " ", "k"}], "]"}], "[", 
+            RowBox[{"[", "4", "]"}], "]"}]}]}], "\n", "  ", "|>"}]}]}], "\n", 
+      " ", "]"}]}], ";"}], "\n", "\n", 
+   RowBox[{"(*", "\n", "  ", 
+    RowBox[{
+     RowBox[{
+      RowBox[{
+      "Select", " ", "the", " ", "four", " ", "parts", " ", "when", " ", 
+       "they", " ", "are", " ", "pairwise", " ", "coprime"}], ";", " ", 
+      RowBox[{
+      "otherwise", " ", "select", " ", "the", " ", "three", " ", "parts", " ",
+        "according", " ", "to", " ", "the", " ", "parity", " ", "of", " ", 
+       "s"}]}], ",", " ", 
+     RowBox[{"as", " ", "in", " ", "the", " ", "branch", " ", 
+      RowBox[{"table", "."}]}]}], "\n", "*)"}], "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"MercaSystem", "[", 
+      RowBox[{"r_Integer", ",", " ", "s_Integer", ",", " ", "k_Integer"}], 
+      "]"}], " ", ":=", "\n", " ", 
+     RowBox[{"Module", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{"fourParts", " ", "=", " ", 
+         RowBox[{"{", 
+          RowBox[{"s", ",", " ", 
+           RowBox[{"r", " ", "-", " ", "s"}], ",", " ", 
+           RowBox[{"r", " ", "+", " ", "s"}], ",", " ", 
+           RowBox[{
+            RowBox[{"2", " ", "r"}], " ", "-", " ", "s"}]}], "}"}]}], "}"}], ",",
+        "\n", "  ", 
+       RowBox[{
+        RowBox[{"If", "[", 
+         RowBox[{
+          RowBox[{"!", 
+           RowBox[{"(", 
+            RowBox[{
+             RowBox[{"k", " ", ">=", " ", "1"}], " ", "&&", "\n", "      ", 
+             RowBox[{"(", 
+              RowBox[{
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{"r", " ", "==", " ", "2"}], " ", "&&", " ", 
+                 RowBox[{"s", " ", "==", " ", "1"}]}], ")"}], " ", "||", "\n",
+                "       ", 
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{
+                  RowBox[{"GCD", "[", 
+                   RowBox[{"r", ",", " ", "s"}], "]"}], " ", "==", " ", "1"}],
+                  " ", "&&", " ", 
+                 RowBox[{"1", " ", "<=", " ", "s", " ", "<", " ", 
+                  RowBox[{"r", "/", "2"}]}]}], ")"}]}], ")"}]}], ")"}]}], ",",
+           "\n", "   ", 
+          RowBox[{"Return", "[", 
+           RowBox[{"Failure", "[", 
+            RowBox[{"\"\<BadParameters\>\"", ",", "\n", "     ", 
+             RowBox[{"<|", 
+              
+              RowBox[{"\"\<Requirement\>\"", " ", "->", "\n", 
+               "       ", "\"\<k>=1 and either (r,s)=(2,1), or gcd(r,s)=1 \
+with 1<=s<r/2\>\""}], "|>"}]}], "]"}], "]"}]}], "\n", "  ", "]"}], ";", "\n", 
+        "  ", 
+        RowBox[{"If", "[", 
+         RowBox[{
+          RowBox[{"r", " ", "==", " ", "3"}], ",", "\n", "   ", 
+          RowBox[{"Return", "[", 
+           RowBox[{"Failure", "[", 
+            
+            RowBox[{"\"\<ModulusThreeHandledTheoretically\>\"", ",", "\n", 
+             "     ", 
+             RowBox[{"<|", 
+              
+              RowBox[{"\"\<Explanation\>\"", " ", "->", "\n", 
+               "       ", "\"\<r=3 is settled without the circle method and \
+is not assigned an analytic report.\>\""}], "|>"}]}], "]"}], "]"}]}], "\n", 
+         "  ", "]"}], ";", "\n", "  ", 
+        RowBox[{"If", "[", 
+         RowBox[{
+          RowBox[{
+           RowBox[{"r", " ", "==", " ", "2"}], " ", "&&", " ", 
+           RowBox[{"s", " ", "==", " ", "1"}]}], ",", "\n", "   ", 
+          RowBox[{"MercaBoundarySystem", "[", "k", "]"}], ",", "\n", "   ", 
+          RowBox[{"If", "[", 
+           RowBox[{
+            RowBox[{"PairwiseCoprimeQ", "[", "fourParts", "]"}], ",", "\n", 
+            "    ", 
+            RowBox[{"MercaFourSystem", "[", 
+             RowBox[{"r", ",", " ", "s", ",", " ", "k"}], "]"}], ",", "\n", 
+            "    ", 
+            RowBox[{"MercaTripleSystem", "[", 
+             RowBox[{"r", ",", " ", "s", ",", " ", "k"}], "]"}]}], "\n", 
+           "   ", "]"}]}], "\n", "  ", "]"}]}]}], "\n", " ", "]"}]}], ";"}], 
+   "\n", "\n", 
+   RowBox[{"(*", "\n", "  ", 
+    RowBox[{
+     RowBox[{
+     "Expand", " ", "the", " ", "selected", " ", "finite", " ", "quotient", " ",
+       "by", " ", "exact", " ", "integer", " ", "dynamic", " ", "programming",
+       " ", "and", " ", "the", " ", "four", " ", "theta", " ", "shifts", " ", 
+      "in", " ", "the", " ", "coefficient", " ", "formulas", " ", "for", " ", 
+      "C", 
+      RowBox[{"(", "n", ")"}]}], ",", " ", 
+     RowBox[{"D", 
+      RowBox[{"(", "n", ")"}], " ", "and", " ", "E", 
+      RowBox[{
+       RowBox[{"(", "n", ")"}], "."}]}]}], "\n", "*)"}], "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"TransformedCoefficients", "[", 
+      RowBox[{"system_Association", ",", " ", 
+       RowBox[{"limit_Integer", "?", "NonNegative"}]}], "]"}], " ", ":=", 
+     "\n", " ", 
+     RowBox[{"Module", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{"parts", ",", " ", "counts", ",", " ", "values", ",", " ", 
+         RowBox[{"block", " ", "=", " ", "0"}], ",", " ", "shifts", ",", " ", 
+         RowBox[{"signs", " ", "=", " ", 
+          RowBox[{"{", 
+           RowBox[{"1", ",", " ", 
+            RowBox[{"-", "1"}], ",", " ", 
+            RowBox[{"-", "1"}], ",", " ", "1"}], "}"}]}], ",", "\n", "   ", 
+         "r", ",", " ", "s", ",", " ", "k"}], "}"}], ",", "\n", "  ", 
+       RowBox[{
+        RowBox[{"parts", " ", "=", " ", 
+         RowBox[{
+          RowBox[{"system", "[", "\"\<Extrema\>\"", "]"}], 
+          "[", "\"\<Parts\>\"", "]"}]}], ";", "\n", "  ", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{"r", ",", " ", "s", ",", " ", "k"}], "}"}], " ", "=", " ", 
+         RowBox[{"Lookup", "[", 
+          RowBox[{"system", ",", " ", 
+           RowBox[{"{", 
+            
+            RowBox[{"\"\<r\>\"", ",", " ", "\"\<s\>\"", ",", 
+             " ", "\"\<k\>\""}], "}"}]}], "]"}]}], ";", "\n", "  ", 
+        RowBox[{"counts", " ", "=", " ", 
+         RowBox[{"RestrictedPartitionCounts", "[", 
+          RowBox[{"parts", ",", " ", "limit"}], "]"}]}], ";", "\n", "  ", 
+        RowBox[{"values", " ", "=", " ", 
+         RowBox[{"ConstantArray", "[", 
+          RowBox[{"0", ",", " ", 
+           RowBox[{"limit", " ", "+", " ", "1"}]}], "]"}]}], ";", "\n", "  ", 
+        RowBox[{"While", "[", 
+         RowBox[{
+          RowBox[{
+           RowBox[{
+            RowBox[{"TValues", "[", 
+             RowBox[{"block", ",", " ", "r", ",", " ", "s", ",", " ", "k"}], 
+             "]"}], "[", 
+            RowBox[{"[", "1", "]"}], "]"}], " ", "<=", " ", "limit"}], ",", 
+          "\n", "   ", 
+          RowBox[{
+           RowBox[{"shifts", " ", "=", " ", 
+            RowBox[{"TValues", "[", 
+             RowBox[{"block", ",", " ", "r", ",", " ", "s", ",", " ", "k"}], 
+             "]"}]}], ";", "\n", "   ", 
+           RowBox[{"Do", "[", "\n", "    ", 
+            RowBox[{
+             RowBox[{"If", "[", 
+              RowBox[{
+               RowBox[{
+                RowBox[{"shifts", "[", 
+                 RowBox[{"[", "index", "]"}], "]"}], " ", "<=", " ", 
+                "limit"}], ",", "\n", "     ", 
+               RowBox[{"Do", "[", "\n", "      ", 
+                RowBox[{
+                 RowBox[{
+                  RowBox[{"values", "[", 
+                   RowBox[{"[", 
+                    RowBox[{"degree", " ", "+", " ", "1"}], "]"}], "]"}], " ",
+                   "=", " ", 
+                  RowBox[{
+                   RowBox[{"values", "[", 
+                    RowBox[{"[", 
+                    RowBox[{"degree", " ", "+", " ", "1"}], "]"}], "]"}], " ",
+                    "+", "\n", "        ", 
+                   RowBox[{
+                    RowBox[{"signs", "[", 
+                    RowBox[{"[", "index", "]"}], "]"}], " ", 
+                    RowBox[{"counts", "[", 
+                    RowBox[{"[", 
+                    RowBox[{"degree", " ", "-", " ", 
+                    RowBox[{"shifts", "[", 
+                    RowBox[{"[", "index", "]"}], "]"}], " ", "+", " ", "1"}], 
+                    "]"}], "]"}]}]}]}], ",", "\n", "      ", 
+                 RowBox[{"{", 
+                  RowBox[{"degree", ",", " ", 
+                   RowBox[{"shifts", "[", 
+                    RowBox[{"[", "index", "]"}], "]"}], ",", " ", "limit"}], 
+                  "}"}]}], "\n", "     ", "]"}]}], "\n", "    ", "]"}], ",", 
+             "\n", "    ", 
+             RowBox[{"{", 
+              RowBox[{"index", ",", " ", "1", ",", " ", "4"}], "}"}]}], "\n", 
+            "   ", "]"}], ";", "\n", "   ", 
+           RowBox[{"block", "++"}]}]}], "\n", "  ", "]"}], ";", "\n", "  ", 
+        "values"}]}], "\n", " ", "]"}]}], ";"}], "\n", "\n", 
+   RowBox[{"(*", "\n", "  ", 
+    RowBox[{
+    "Compute", " ", "the", " ", "finite", " ", "negative", " ", "mass", " ", 
+     "N_b", " ", "below", " ", "the", " ", "finite", " ", "positivity", " ", 
+     "threshold", " ", 
+     RowBox[{"n_b", "."}]}], "\n", "*)"}], "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"FiniteNegativeData", "[", "system_Association", "]"}], " ", ":=",
+      "\n", " ", 
+     RowBox[{"Module", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{"nb", ",", " ", "values", ",", " ", "negativePairs"}], "}"}], 
+       ",", "\n", "  ", 
+       RowBox[{
+        RowBox[{"nb", " ", "=", " ", 
+         RowBox[{"system", "[", "\"\<nb\>\"", "]"}]}], ";", "\n", "  ", 
+        RowBox[{"If", "[", 
+         RowBox[{
+          RowBox[{"nb", " ", "<=", " ", "0"}], ",", " ", 
+          RowBox[{"Return", "[", 
+           RowBox[{"<|", 
+            RowBox[{
+             RowBox[{"\"\<Nb\>\"", " ", "->", " ", "0"}], ",", " ", 
+             RowBox[{"\"\<NegativeCoefficients\>\"", " ", "->", " ", 
+              RowBox[{"{", "}"}]}]}], "|>"}], "]"}]}], "]"}], ";", "\n", "  ", 
+        RowBox[{"values", " ", "=", " ", 
+         RowBox[{"TransformedCoefficients", "[", 
+          RowBox[{"system", ",", " ", 
+           RowBox[{"nb", " ", "-", " ", "1"}]}], "]"}]}], ";", "\n", "  ", 
+        RowBox[{"negativePairs", " ", "=", "\n", "    ", 
+         RowBox[{"Select", "[", 
+          RowBox[{
+           RowBox[{"Table", "[", 
+            RowBox[{
+             RowBox[{"{", 
+              RowBox[{"degree", ",", " ", 
+               RowBox[{"values", "[", 
+                RowBox[{"[", 
+                 RowBox[{"degree", " ", "+", " ", "1"}], "]"}], "]"}]}], 
+              "}"}], ",", " ", 
+             RowBox[{"{", 
+              RowBox[{"degree", ",", " ", "0", ",", " ", 
+               RowBox[{"nb", " ", "-", " ", "1"}]}], "}"}]}], "]"}], ",", 
+           "\n", "      ", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"Last", "[", "#", "]"}], " ", "<", " ", "0"}], " ", 
+            "&"}]}], "]"}]}], ";", "\n", "  ", 
+        RowBox[{"<|", "\n", "   ", 
+         RowBox[{
+          RowBox[{"\"\<Nb\>\"", " ", "->", "\n", "    ", 
+           RowBox[{"If", "[", 
+            RowBox[{
+             RowBox[{"negativePairs", " ", "===", " ", 
+              RowBox[{"{", "}"}]}], ",", " ", "0", ",", " ", 
+             RowBox[{"Total", "[", 
+              RowBox[{"-", 
+               RowBox[{"negativePairs", "[", 
+                RowBox[{"[", 
+                 RowBox[{"All", ",", " ", "2"}], "]"}], "]"}]}], "]"}]}], 
+            "]"}]}], ",", "\n", "   ", 
+          
+          RowBox[{"\"\<NegativeCoefficients\>\"", " ", "->", " ", 
+           "negativePairs"}]}], "\n", "  ", "|>"}]}]}], "\n", " ", "]"}]}], 
+    ";"}]}]}]], "Input",
+ CellLabel->
+  "In[120]:=",ExpressionUUID->"186781fe-ebfa-0e4b-9d72-6aa5f12b87e8"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"system1211", " ", "=", " ", 
+   RowBox[{"MercaSystem", "[", 
+    RowBox[{"12", ",", " ", "1", ",", " ", "1"}], "]"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{"rootOfUnityCheck", " ", "=", " ", 
+   RowBox[{"RootOfUnityIdentityCheck", "[", 
+    RowBox[{"system1211", ",", " ", 
+     RowBox[{"Range", "[", 
+      RowBox[{"0", ",", " ", "6"}], "]"}], ",", " ", "70"}], "]"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{"KeyTake", "[", 
+   RowBox[{"system1211", ",", " ", 
+    RowBox[{"{", 
+     RowBox[{"\"\<Family\>\"", ",", " ", "\"\<RootCeilings\>\"", ",", 
+      " ", "\"\<P0\>\"", ",", " ", "\"\<nb\>\""}], "}"}]}], "]"}], " ", "//", 
+  " ", "Dataset"}], "\n", 
+ RowBox[{"rootOfUnityCheck", " ", "//", " ", "Dataset"}], "\n", 
+ RowBox[{
+  RowBox[{"system1211", "[", "\"\<Tests\>\"", "]"}], " ", "//", " ", 
+  "Column"}]}], "Input",
+ CellLabel->
+  "In[138]:=",ExpressionUUID->"1884bc91-ad55-4746-b92f-68c2a301a4bc"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["\<\
+3. Chapters 5-6: analytic scales and the Mellin interval certificate\
+\>", "Section",ExpressionUUID->"cd7175dc-4bff-404c-b515-9c9ed5c2042d"],
+
+Cell["\<\
+The scale checks are quick. The full Mellin certificate uses 2048 cells per \
+unit interval and 70-digit precision, for 40 times 2048 cells in total. Its \
+progress runs from 0 to 40. The two tail bounds are analytic inputs proved in \
+the manuscript.\
+\>", "Text",ExpressionUUID->"93811f94-aa4c-da44-a5b2-aa37350b112b"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", "\n", "  ", 
+   RowBox[{
+    RowBox[{
+     RowBox[{
+      RowBox[{"Chapters", " ", "5"}], "-", "6"}], ":", " ", 
+     RowBox[{"delta_M", " ", "and", " ", "eta_M"}]}], ",", " ", 
+    RowBox[{
+     RowBox[{
+     "followed", " ", "by", " ", "the", " ", "detailed", " ", "remainder", " ",
+       "R_M", 
+      RowBox[{"(", "X", ")"}], " ", "and", " ", "the", " ", 
+      RowBox[{"X", "/", "T"}], " ", 
+      RowBox[{"scales", ".", " ", "R_M"}], " ", "includes", " ", "the", " ", 
+      "R14", " ", "residue", " ", 
+      RowBox[{"contribution", ".", " ", "It"}], " ", "is", " ", "bounded", " ",
+       "by", " ", "the", " ", "compact", " ", "E_M", 
+      RowBox[{"(", "X", ")"}], " ", "in", " ", "the", " ", 
+      RowBox[{"manuscript", ".", " ", "X0"}], " ", "is", " ", "110", " ", 
+      RowBox[{"M", "^", "7"}]}], ";", " ", 
+     RowBox[{"all", " ", "returned", " ", "thresholds", " ", "are", " ", 
+      RowBox[{"integers", "."}]}]}]}], "\n", "*)"}], "\n", 
+  RowBox[{
+   RowBox[{
+    RowBox[{
+     RowBox[{"MinorDelta", "[", "M_Integer", "]"}], " ", ":=", " ", 
+     RowBox[{"Min", "[", 
+      RowBox[{
+       RowBox[{"1", "/", "6"}], ",", " ", 
+       RowBox[{"2", " ", 
+        RowBox[{
+         RowBox[{"(", 
+          RowBox[{"M", " ", "-", " ", "1"}], ")"}], "/", 
+         RowBox[{"M", "^", "2"}]}]}]}], "]"}]}], ";"}], "\n", "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"MinorEta", "[", "M_Integer", "]"}], " ", ":=", " ", 
+     RowBox[{
+      RowBox[{"Pi", "^", "2"}], " ", 
+      RowBox[{
+       RowBox[{"MinorDelta", "[", "M", "]"}], "/", 
+       RowBox[{"(", 
+        RowBox[{"2", " ", "M"}], ")"}]}]}]}], ";"}], "\n", "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"MinorRemainder", "[", 
+      RowBox[{"M_Integer", ",", " ", "x_Integer"}], "]"}], " ", ":=", "\n", 
+     "  ", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"(", 
+        RowBox[{"2604", "/", "100"}], ")"}], " ", 
+       RowBox[{"M", "^", 
+        RowBox[{"(", 
+         RowBox[{"3", "/", "2"}], ")"}]}], " ", 
+       RowBox[{"Sqrt", "[", "x", "]"}]}], " ", "+", " ", 
+      RowBox[{
+       RowBox[{"(", 
+        RowBox[{"7", "/", "3"}], ")"}], " ", "M"}], " ", "+", "\n", "   ", 
+      RowBox[{"6", " ", 
+       RowBox[{
+        RowBox[{"Exp", "[", 
+         RowBox[{
+          RowBox[{"(", 
+           RowBox[{"28", "/", "100"}], ")"}], " ", 
+          RowBox[{
+           RowBox[{"Pi", "^", "2"}], "/", "M"}]}], "]"}], "/", 
+        RowBox[{
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"Exp", "[", 
+            RowBox[{
+             RowBox[{"(", 
+              RowBox[{"28", "/", "100"}], ")"}], " ", 
+             RowBox[{
+              RowBox[{"Pi", "^", "2"}], "/", "M"}]}], "]"}], " ", "-", " ", 
+           "1"}], ")"}], "^", "2"}]}]}], " ", "+", "\n", "   ", 
+      RowBox[{
+       RowBox[{"(", 
+        RowBox[{"3", "/", "1"}], ")"}], " ", 
+       RowBox[{"Log", "[", "M", "]"}]}], " ", "+", " ", 
+      RowBox[{
+       RowBox[{"(", 
+        RowBox[{"26", "/", "10"}], ")"}], " ", 
+       RowBox[{"Sqrt", "[", "x", "]"}]}], " ", "+", "\n", "   ", 
+      RowBox[{
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"(", 
+           RowBox[{"88", "/", "100"}], ")"}], " ", 
+          RowBox[{"Sqrt", "[", "x", "]"}]}], " ", "+", " ", 
+         RowBox[{"600", "/", "100"}]}], ")"}], " ", 
+       RowBox[{"Log", "[", "x", "]"}]}], " ", "+", 
+      RowBox[{"900", "/", "100"}]}]}], ";"}], "\n", "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"MercaAnalyticScales", "[", "M_Integer", "]"}], " ", ":=", "\n", 
+     " ", 
+     RowBox[{"Module", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+        "x0", ",", " ", "xp", ",", " ", "tp", ",", " ", "xs", ",", " ", 
+         "ts"}], "}"}], ",", "\n", "  ", 
+       RowBox[{
+        RowBox[{"If", "[", 
+         RowBox[{
+          RowBox[{"M", " ", "<", " ", "4"}], ",", " ", 
+          RowBox[{"Return", "[", 
+           RowBox[{"Failure", "[", 
+            RowBox[{"\"\<BadModulus\>\"", ",", " ", 
+             RowBox[{"<|", 
+              RowBox[{"\"\<Requirement\>\"", " ", "->", " ", "\"\<M>=4\>\""}],
+               "|>"}]}], "]"}], "]"}]}], "]"}], ";", "\n", "  ", 
+        RowBox[{"x0", " ", "=", " ", 
+         RowBox[{"110", " ", 
+          RowBox[{"M", "^", "7"}]}]}], ";", "\n", "  ", 
+        RowBox[{"xp", " ", "=", " ", 
+         RowBox[{"Max", "[", 
+          RowBox[{"x0", ",", " ", 
+           RowBox[{"12000000", " ", "M"}]}], "]"}]}], ";", "\n", "  ", 
+        RowBox[{"tp", " ", "=", " ", 
+         RowBox[{"Ceiling", "[", 
+          RowBox[{"10", " ", 
+           RowBox[{
+            RowBox[{"xp", "^", "2"}], "/", 
+            RowBox[{"(", 
+             RowBox[{"3", " ", "M"}], ")"}]}]}], "]"}]}], ";", "\n", "  ", 
+        RowBox[{"xs", " ", "=", " ", 
+         RowBox[{"Max", "[", 
+          RowBox[{"x0", ",", " ", 
+           RowBox[{"2000000000000000", " ", "M"}]}], "]"}]}], ";", "\n", "  ", 
+        RowBox[{"ts", " ", "=", " ", 
+         RowBox[{"Ceiling", "[", 
+          RowBox[{"10", " ", 
+           RowBox[{
+            RowBox[{"xs", "^", "2"}], "/", 
+            RowBox[{"(", 
+             RowBox[{"3", " ", "M"}], ")"}]}]}], "]"}]}], ";", "\n", "  ", 
+        RowBox[{"<|", 
+         RowBox[{
+          RowBox[{"\"\<X0\>\"", " ", "->", " ", "x0"}], ",", "\n", "    ", 
+          RowBox[{"\"\<Xp\>\"", " ", "->", " ", "xp"}], ",", " ", 
+          RowBox[{"\"\<Tp\>\"", " ", "->", " ", "tp"}], ",", "\n", "    ", 
+          RowBox[{"\"\<Xs\>\"", " ", "->", " ", "xs"}], ",", " ", 
+          RowBox[{"\"\<Ts\>\"", " ", "->", " ", "ts"}]}], "|>"}]}]}], "\n", 
+      " ", "]"}]}], ";"}], "\n", "\n", "\n", 
+   RowBox[{"(*", "\n", "  ", 
+    RowBox[{
+     RowBox[{
+     "Numerical", " ", "endpoint", " ", "values", " ", "of", " ", "R_M", 
+      RowBox[{
+       RowBox[{"(", "X", ")"}], "/", 
+       RowBox[{"(", 
+        RowBox[{"eta_M", " ", "X"}], ")"}]}], " ", "at", " ", "X"}], "=", 
+     RowBox[{"110", " ", 
+      RowBox[{"M", "^", "7."}], " ", "The", " ", "manuscript", " ", "proves", 
+      " ", "the", " ", "required", " ", "estimate", " ", "analytically", " ", 
+      "using", " ", "the", " ", "compact", " ", "E_M", 
+      RowBox[{
+       RowBox[{"(", "X", ")"}], "."}]}]}], "\n", "*)"}], "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"RootScaleRatio", "[", "M_Integer", "]"}], " ", ":=", "\n", " ", 
+     RowBox[{"N", "[", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"MinorRemainder", "[", 
+         RowBox[{"M", ",", " ", 
+          RowBox[{"110", " ", 
+           RowBox[{"M", "^", "7"}]}]}], "]"}], "/", 
+        RowBox[{"(", 
+         RowBox[{
+          RowBox[{"MinorEta", "[", "M", "]"}], " ", "110", " ", 
+          RowBox[{"M", "^", "7"}]}], ")"}]}], ",", " ", "30"}], "]"}]}], 
+    ";"}], "\n", "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"RootScaleEndpointChecks", "[", "]"}], " ", ":=", "\n", " ", 
+     RowBox[{"Module", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"psi4", " ", "=", " ", 
+          RowBox[{"RootScaleRatio", "[", "4", "]"}]}], ",", " ", 
+         RowBox[{"psi11", " ", "=", " ", 
+          RowBox[{"RootScaleRatio", "[", "11", "]"}]}]}], "}"}], ",", "\n", 
+       "  ", 
+       RowBox[{"<|", 
+        RowBox[{
+         RowBox[{"\"\<Psi4\>\"", " ", "->", " ", "psi4"}], ",", " ", 
+         RowBox[{"\"\<Psi11\>\"", " ", "->", " ", "psi11"}], ",", "\n", 
+         "    ", 
+         RowBox[{"\"\<Checks\>\"", " ", "->", " ", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"psi4", " ", "<", " ", 
+             RowBox[{"856", "/", "1000"}]}], ",", " ", 
+            RowBox[{"psi11", " ", "<", " ", 
+             RowBox[{"298", "/", "1000"}]}]}], "}"}]}], ",", "\n", "    ", 
+         RowBox[{"\"\<AllChecks\>\"", " ", "->", " ", 
+          RowBox[{"And", "[", 
+           RowBox[{
+            RowBox[{"psi4", " ", "<", " ", 
+             RowBox[{"856", "/", "1000"}]}], ",", " ", 
+            RowBox[{"psi11", " ", "<", " ", 
+             RowBox[{"298", "/", "1000"}]}]}], "]"}]}]}], "|>"}]}], "\n", " ",
+       "]"}]}], ";"}], "\n", "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"ConvolutionConstant", "[", 
+      RowBox[{"M_Integer", ",", " ", "gamma_"}], "]"}], " ", ":=", "\n", " ", 
+     RowBox[{"Ceiling", "[", 
+      RowBox[{"796", " ", 
+       RowBox[{"2", "^", "gamma"}], " ", 
+       RowBox[{"Exp", "[", 
+        RowBox[{"2", " ", 
+         RowBox[{"Pi", "/", 
+          RowBox[{"Sqrt", "[", 
+           RowBox[{"3", " ", "M"}], "]"}]}]}], "]"}]}], "]"}]}], ";"}], "\n", 
+   "\n", 
+   RowBox[{"(*", "\n", "  ", 
+    RowBox[{
+     RowBox[{
+     "Certified", " ", "compact", " ", "Mellin", " ", "integrals", " ", 
+      "from", " ", "the", " ", "local", " ", 
+      RowBox[{"expansion", ".", " ", "Interval"}], " ", "arithmetic", " ", 
+      "is", " ", "used", " ", "throughout"}], ";", " ", 
+     RowBox[{"NIntegrate", " ", "is", " ", "not", " ", 
+      RowBox[{"used", "."}]}]}], "\n", "*)"}], "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"IntervalAbsUpper", "[", "value_Interval", "]"}], " ", ":=", 
+     "\n", " ", 
+     RowBox[{"Max", "[", 
+      RowBox[{"Abs", "[", 
+       RowBox[{"Flatten", "[", 
+        RowBox[{"List", " ", "@@", " ", "value"}], "]"}], "]"}], "]"}]}], 
+    ";"}], "\n", "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"OutwardUpper", "[", 
+      RowBox[{"expression_", ",", " ", "workingPrecision_Integer"}], "]"}], 
+     " ", ":=", "\n", " ", 
+     RowBox[{"Module", "[", 
+      RowBox[{
+       RowBox[{"{", "value", "}"}], ",", "\n", "  ", 
+       RowBox[{
+        RowBox[{"value", " ", "=", " ", 
+         RowBox[{"If", "[", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"Head", "[", "expression", "]"}], " ", "===", " ", 
+            "Interval"}], ",", "\n", "    ", 
+           RowBox[{"N", "[", 
+            RowBox[{"expression", ",", " ", "workingPrecision"}], "]"}], ",", 
+           "\n", "    ", 
+           RowBox[{"N", "[", 
+            RowBox[{
+             RowBox[{"Interval", "[", 
+              RowBox[{"{", 
+               RowBox[{"expression", ",", " ", "expression"}], "}"}], "]"}], ",",
+              " ", "workingPrecision"}], "]"}]}], "\n", "   ", "]"}]}], ";", 
+        "\n", "  ", 
+        RowBox[{"Max", "[", 
+         RowBox[{"Flatten", "[", 
+          RowBox[{"List", " ", "@@", " ", "value"}], "]"}], "]"}]}]}], "\n", 
+      " ", "]"}]}], ";"}], "\n", "\n", 
+   RowBox[{"(*", "\n", "  ", 
+    RowBox[{
+     RowBox[{"Euler", "-", 
+      RowBox[{"Maclaurin", " ", "enclosure", " ", "for"}]}], " ", "|", 
+     RowBox[{"zeta", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"3", "/", "4"}], "-", "it"}], ")"}]}], "|", " ", 
+     RowBox[{"on", " ", "one", " ", "mesh", " ", 
+      RowBox[{"cell", "."}]}]}], "\n", "*)"}], "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"ZetaRectangleUpper", "[", 
+      RowBox[{"lo_", ",", " ", "hi_", ",", " ", "workingPrecision_Integer"}], 
+      "]"}], " ", ":=", "\n", " ", 
+     RowBox[{"Module", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"tt", " ", "=", " ", 
+          RowBox[{"Interval", "[", 
+           RowBox[{"{", 
+            RowBox[{"lo", ",", " ", "hi"}], "}"}], "]"}]}], ",", " ", 
+         RowBox[{"re", " ", "=", " ", 
+          RowBox[{"Interval", "[", 
+           RowBox[{"{", 
+            RowBox[{"0", ",", " ", "0"}], "}"}], "]"}]}], ",", "\n", "   ", 
+         RowBox[{"im", " ", "=", " ", 
+          RowBox[{"Interval", "[", 
+           RowBox[{"{", 
+            RowBox[{"0", ",", " ", "0"}], "}"}], "]"}]}], ",", " ", "theta", ",",
+          " ", "cc", ",", " ", "ss", ",", " ", "aa", ",", " ", "bb", ",", " ",
+          "denominator", ",", "\n", "   ", "remainder", ",", " ", "reUpper", ",",
+          " ", "imUpper", ",", " ", "magnitude", ",", " ", 
+         RowBox[{"nn", " ", "=", " ", "32"}]}], "}"}], ",", "\n", "  ", 
+       RowBox[{
+        RowBox[{"tt", " ", "=", " ", 
+         RowBox[{"N", "[", 
+          RowBox[{"tt", ",", " ", "workingPrecision"}], "]"}]}], ";", "\n", 
+        "  ", 
+        RowBox[{"re", " ", "=", " ", 
+         RowBox[{"N", "[", 
+          RowBox[{"re", ",", " ", "workingPrecision"}], "]"}]}], ";", " ", 
+        RowBox[{"im", " ", "=", " ", 
+         RowBox[{"N", "[", 
+          RowBox[{"im", ",", " ", "workingPrecision"}], "]"}]}], ";", "\n", 
+        "  ", 
+        RowBox[{"Do", "[", "\n", "   ", 
+         RowBox[{
+          RowBox[{
+           RowBox[{"theta", " ", "=", " ", 
+            RowBox[{
+             RowBox[{"Log", "[", "nu", "]"}], " ", "tt"}]}], ";", "\n", "   ", 
+           RowBox[{"re", " ", "=", " ", 
+            RowBox[{"re", " ", "+", " ", 
+             RowBox[{
+              RowBox[{"nu", "^", 
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{"-", "3"}], "/", "4"}], ")"}]}], " ", 
+              RowBox[{"Cos", "[", "theta", "]"}]}]}]}], ";", "\n", "   ", 
+           RowBox[{"im", " ", "=", " ", 
+            RowBox[{"im", " ", "+", " ", 
+             RowBox[{
+              RowBox[{"nu", "^", 
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{"-", "3"}], "/", "4"}], ")"}]}], " ", 
+              RowBox[{"Sin", "[", "theta", "]"}]}]}]}]}], ",", "\n", "   ", 
+          RowBox[{"{", 
+           RowBox[{"nu", ",", " ", "1", ",", " ", 
+            RowBox[{"nn", " ", "-", " ", "1"}]}], "}"}]}], "\n", "  ", "]"}], 
+        ";", "\n", "  ", 
+        RowBox[{"theta", " ", "=", " ", 
+         RowBox[{
+          RowBox[{"Log", "[", "nn", "]"}], " ", "tt"}]}], ";", "\n", "  ", 
+        RowBox[{"cc", " ", "=", " ", 
+         RowBox[{"Cos", "[", "theta", "]"}]}], ";", " ", 
+        RowBox[{"ss", " ", "=", " ", 
+         RowBox[{"Sin", "[", "theta", "]"}]}], ";", "\n", "  ", 
+        RowBox[{"aa", " ", "=", " ", 
+         RowBox[{
+          RowBox[{"nn", "^", 
+           RowBox[{"(", 
+            RowBox[{"1", "/", "4"}], ")"}]}], " ", "cc"}]}], ";", " ", 
+        RowBox[{"bb", " ", "=", " ", 
+         RowBox[{
+          RowBox[{"nn", "^", 
+           RowBox[{"(", 
+            RowBox[{"1", "/", "4"}], ")"}]}], " ", "ss"}]}], ";", "\n", "  ", 
+        RowBox[{"denominator", " ", "=", " ", 
+         RowBox[{
+          RowBox[{"1", "/", "16"}], " ", "+", " ", 
+          RowBox[{"tt", "^", "2"}]}]}], ";", "\n", "  ", 
+        RowBox[{"re", " ", "=", " ", 
+         RowBox[{"re", " ", "+", " ", 
+          RowBox[{
+           RowBox[{"(", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"-", "aa"}], "/", "4"}], " ", "-", " ", 
+             RowBox[{"bb", " ", "tt"}]}], ")"}], "/", "denominator"}]}]}], ";",
+         "\n", "  ", 
+        RowBox[{"im", " ", "=", " ", 
+         RowBox[{"im", " ", "+", " ", 
+          RowBox[{
+           RowBox[{"(", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"-", "bb"}], "/", "4"}], " ", "+", " ", 
+             RowBox[{"aa", " ", "tt"}]}], ")"}], "/", "denominator"}]}]}], ";",
+         "\n", "  ", 
+        RowBox[{"re", " ", "=", " ", 
+         RowBox[{"re", " ", "+", " ", 
+          RowBox[{
+           RowBox[{"nn", "^", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "3"}], "/", "4"}], ")"}]}], " ", 
+           RowBox[{"cc", "/", "2"}]}]}]}], ";", "\n", "  ", 
+        RowBox[{"im", " ", "=", " ", 
+         RowBox[{"im", " ", "+", " ", 
+          RowBox[{
+           RowBox[{"nn", "^", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "3"}], "/", "4"}], ")"}]}], " ", 
+           RowBox[{"ss", "/", "2"}]}]}]}], ";", "\n", "  ", 
+        RowBox[{"re", " ", "=", " ", 
+         RowBox[{"re", " ", "+", " ", 
+          RowBox[{
+           RowBox[{"nn", "^", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "7"}], "/", "4"}], ")"}]}], " ", 
+           RowBox[{
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"3", " ", 
+               RowBox[{"cc", "/", "4"}]}], " ", "+", " ", 
+              RowBox[{"tt", " ", "ss"}]}], ")"}], "/", "12"}]}]}]}], ";", 
+        "\n", "  ", 
+        RowBox[{"im", " ", "=", " ", 
+         RowBox[{"im", " ", "+", " ", 
+          RowBox[{
+           RowBox[{"nn", "^", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "7"}], "/", "4"}], ")"}]}], " ", 
+           RowBox[{
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"3", " ", 
+               RowBox[{"ss", "/", "4"}]}], " ", "-", " ", 
+              RowBox[{"tt", " ", "cc"}]}], ")"}], "/", "12"}]}]}]}], ";", 
+        "\n", "  ", 
+        RowBox[{"remainder", " ", "=", "\n", "   ", 
+         RowBox[{
+          RowBox[{"Sqrt", "[", 
+           RowBox[{
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"9", "/", "16"}], " ", "+", " ", 
+              RowBox[{"hi", "^", "2"}]}], ")"}], " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"49", "/", "16"}], " ", "+", " ", 
+              RowBox[{"hi", "^", "2"}]}], ")"}]}], "]"}], "/", 
+          RowBox[{"(", 
+           RowBox[{"21", " ", 
+            RowBox[{"nn", "^", 
+             RowBox[{"(", 
+              RowBox[{"7", "/", "4"}], ")"}]}]}], ")"}]}]}], ";", "\n", "  ", 
+        RowBox[{"reUpper", " ", "=", " ", 
+         RowBox[{"IntervalAbsUpper", "[", "re", "]"}]}], ";", " ", 
+        RowBox[{"imUpper", " ", "=", " ", 
+         RowBox[{"IntervalAbsUpper", "[", "im", "]"}]}], ";", "\n", "  ", 
+        RowBox[{"magnitude", " ", "=", " ", 
+         RowBox[{"Sqrt", "[", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"Interval", "[", 
+             RowBox[{"{", 
+              RowBox[{"reUpper", ",", " ", "reUpper"}], "}"}], "]"}], "^", 
+            "2"}], " ", "+", "\n", "     ", 
+           RowBox[{
+            RowBox[{"Interval", "[", 
+             RowBox[{"{", 
+              RowBox[{"imUpper", ",", " ", "imUpper"}], "}"}], "]"}], "^", 
+            "2"}]}], "]"}]}], ";", "\n", "  ", 
+        RowBox[{"OutwardUpper", "[", 
+         RowBox[{
+          RowBox[{"magnitude", " ", "+", " ", "remainder"}], ",", " ", 
+          "workingPrecision"}], "]"}]}]}], "\n", " ", "]"}]}], ";"}], "\n", "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"KRectangleUpper", "[", 
+      RowBox[{"lo_", ",", " ", "hi_", ",", " ", "workingPrecision_Integer"}], 
+      "]"}], " ", ":=", "\n", " ", 
+     RowBox[{"Module", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+        "zetaUpper", ",", " ", "zetaInterval", ",", " ", "numerator", ",", 
+         " ", "denominator", ",", " ", "expression"}], "}"}], ",", "\n", "  ", 
+       RowBox[{
+        RowBox[{"zetaUpper", " ", "=", " ", 
+         RowBox[{"ZetaRectangleUpper", "[", 
+          RowBox[{"lo", ",", " ", "hi", ",", " ", "workingPrecision"}], 
+          "]"}]}], ";", "\n", "  ", 
+        RowBox[{"zetaInterval", " ", "=", " ", 
+         RowBox[{"Interval", "[", 
+          RowBox[{"{", 
+           RowBox[{"zetaUpper", ",", " ", "zetaUpper"}], "}"}], "]"}]}], ";", 
+        "\n", "  ", 
+        RowBox[{"numerator", " ", "=", " ", 
+         RowBox[{"Sqrt", "[", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"Sin", "[", 
+             RowBox[{"Pi", "/", "8"}], "]"}], "^", "2"}], " ", "+", " ", 
+           RowBox[{
+            RowBox[{"Sinh", "[", 
+             RowBox[{"Pi", " ", 
+              RowBox[{"hi", "/", "2"}]}], "]"}], "^", "2"}]}], "]"}]}], ";", 
+        "\n", "  ", 
+        RowBox[{"denominator", " ", "=", "\n", "   ", 
+         RowBox[{
+          RowBox[{"Sqrt", "[", 
+           RowBox[{
+            RowBox[{"1", "/", "2"}], " ", "+", " ", 
+            RowBox[{
+             RowBox[{"Sinh", "[", 
+              RowBox[{"Pi", " ", "lo"}], "]"}], "^", "2"}]}], "]"}], " ", 
+          RowBox[{"Sqrt", "[", 
+           RowBox[{
+            RowBox[{"9", "/", "16"}], " ", "+", " ", 
+            RowBox[{"lo", "^", "2"}]}], "]"}]}]}], ";", "\n", "  ", 
+        RowBox[{"expression", " ", "=", " ", 
+         RowBox[{
+          RowBox[{
+           RowBox[{"(", 
+            RowBox[{"2", " ", "Pi"}], ")"}], "^", 
+           RowBox[{"(", 
+            RowBox[{"1", "/", "4"}], ")"}]}], " ", 
+          RowBox[{"Exp", "[", 
+           RowBox[{"Pi", " ", 
+            RowBox[{"hi", "/", "4"}]}], "]"}], " ", "numerator", " ", 
+          RowBox[{"zetaInterval", "/", "\n", "    ", "denominator"}]}]}], ";",
+         "\n", "  ", 
+        RowBox[{"OutwardUpper", "[", 
+         RowBox[{"expression", ",", " ", "workingPrecision"}], "]"}]}]}], 
+      "\n", " ", "]"}]}], ";"}], "\n", "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"H0RectangleUpper", "[", 
+      RowBox[{"hi_", ",", " ", "workingPrecision_Integer"}], "]"}], " ", ":=",
+      "\n", " ", 
+     RowBox[{"Module", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{"zetaUpper", ",", " ", "expression"}], "}"}], ",", "\n", "  ", 
+       RowBox[{
+        RowBox[{"zetaUpper", " ", "=", " ", 
+         RowBox[{
+          RowBox[{"Sum", "[", 
+           RowBox[{
+            RowBox[{"nu", "^", 
+             RowBox[{"(", 
+              RowBox[{
+               RowBox[{"-", "7"}], "/", "4"}], ")"}]}], ",", " ", 
+            RowBox[{"{", 
+             RowBox[{"nu", ",", " ", "1", ",", " ", "100"}], "}"}]}], "]"}], 
+          " ", "+", " ", 
+          RowBox[{"4", "/", 
+           RowBox[{"(", 
+            RowBox[{"3", " ", 
+             RowBox[{"100", "^", 
+              RowBox[{"(", 
+               RowBox[{"3", "/", "4"}], ")"}]}]}], ")"}]}]}]}], ";", "\n", 
+        "  ", 
+        RowBox[{"expression", " ", "=", " ", 
+         RowBox[{"2", " ", "zetaUpper", " ", 
+          RowBox[{
+           RowBox[{"Cosh", "[", 
+            RowBox[{"Pi", " ", 
+             RowBox[{"hi", "/", "2"}]}], "]"}], "/", 
+           RowBox[{
+            RowBox[{"(", 
+             RowBox[{"2", " ", "Pi"}], ")"}], "^", 
+            RowBox[{"(", 
+             RowBox[{"7", "/", "4"}], ")"}]}]}]}]}], ";", "\n", "  ", 
+        RowBox[{"OutwardUpper", "[", 
+         RowBox[{"expression", ",", " ", "workingPrecision"}], "]"}]}]}], 
+      "\n", " ", "]"}]}], ";"}], "\n", "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"HInfinityRectangleUpper", "[", 
+      RowBox[{"lo_", ",", " ", "hi_", ",", " ", "workingPrecision_Integer"}], 
+      "]"}], " ", ":=", "\n", " ", 
+     RowBox[{"Module", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"nn", " ", "=", " ", 
+          RowBox[{"1", " ", "+", " ", 
+           RowBox[{"Floor", "[", "lo", "]"}]}]}], ",", " ", "expression"}], 
+        "}"}], ",", "\n", "  ", 
+       RowBox[{
+        RowBox[{"expression", " ", "=", " ", 
+         RowBox[{
+          RowBox[{"Sum", "[", 
+           RowBox[{
+            RowBox[{"nu", "^", 
+             RowBox[{"(", 
+              RowBox[{"3", "/", "4"}], ")"}]}], ",", " ", 
+            RowBox[{"{", 
+             RowBox[{"nu", ",", " ", "1", ",", " ", "nn"}], "}"}]}], "]"}], 
+          " ", "+", "\n", "    ", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"(", 
+             RowBox[{"nn", " ", "+", " ", "1"}], ")"}], "^", 
+            RowBox[{"(", 
+             RowBox[{"7", "/", "4"}], ")"}]}], "/", 
+           RowBox[{"Sqrt", "[", 
+            RowBox[{
+             RowBox[{"49", "/", "16"}], " ", "+", " ", 
+             RowBox[{"lo", "^", "2"}]}], "]"}]}], " ", "+", "\n", "    ", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"(", 
+             RowBox[{"nn", " ", "+", " ", "1"}], ")"}], "^", 
+            RowBox[{"(", 
+             RowBox[{"3", "/", "4"}], ")"}]}], "/", "2"}], " ", "+", "\n", 
+          "    ", 
+          RowBox[{
+           RowBox[{"(", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"Sqrt", "[", 
+               RowBox[{
+                RowBox[{"9", "/", "16"}], " ", "+", " ", 
+                RowBox[{"hi", "^", "2"}]}], "]"}], "/", "12"}], " ", "+", 
+             "\n", "      ", 
+             RowBox[{
+              RowBox[{"Sqrt", "[", 
+               RowBox[{
+                RowBox[{"(", 
+                 RowBox[{
+                  RowBox[{"9", "/", "16"}], " ", "+", " ", 
+                  RowBox[{"hi", "^", "2"}]}], ")"}], " ", 
+                RowBox[{"(", 
+                 RowBox[{
+                  RowBox[{"1", "/", "16"}], " ", "+", " ", 
+                  RowBox[{"hi", "^", "2"}]}], ")"}]}], "]"}], "/", "3"}]}], 
+            ")"}], " ", 
+           RowBox[{"nn", "^", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "1"}], "/", "4"}], ")"}]}]}]}]}], ";", "\n", "  ", 
+        RowBox[{"OutwardUpper", "[", 
+         RowBox[{"expression", ",", " ", "workingPrecision"}], "]"}]}]}], 
+      "\n", " ", "]"}]}], ";"}], "\n", "\n", 
+   RowBox[{"(*", "\n", "  ", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"One", " ", "pass", " ", 
+       RowBox[{"over", " ", "[", 
+        RowBox[{"0", ",", "40"}], "]"}], " ", "certifies", " ", "the", " ", 
+       "three", " ", "compact", " ", 
+       RowBox[{"integrals", ".", " ", "The"}], " ", "value", " ", "tail"}], "=", 
+      RowBox[{
+       RowBox[{"1", "/", "100"}], " ", "is", " ", "the", " ", "analytic", " ",
+        "tail", " ", "bound", " ", "proved", " ", "in", " ", "the", " ", 
+       RowBox[{"manuscript", ".", " ", "AnalyticTailChecks"}], " ", "checks", 
+       " ", "this", " ", "supplied", " ", "input"}]}], ";", " ", 
+     RowBox[{
+     "it", " ", "does", " ", "not", " ", "calculate", " ", "or", " ", 
+      "independently", " ", "prove", " ", "a", " ", "tail", " ", 
+      RowBox[{"integral", ".", " ", "AllSafetyChecks"}], " ", "combines", " ",
+       "the", " ", "computed", " ", "compact", " ", "bounds", " ", "with", " ",
+       "that", " ", "analytic", " ", 
+      RowBox[{"input", "."}]}]}], "\n", "*)"}], "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"MellinMajorantCheck", "[", 
+      RowBox[{
+       RowBox[{"mesh_Integer", " ", ":", " ", "2048"}], ",", "\n", "   ", 
+       RowBox[{"workingPrecision_Integer", " ", ":", " ", "70"}]}], "]"}], 
+     " ", ":=", "\n", " ", 
+     RowBox[{"Module", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"sumH0", " ", "=", " ", 
+          RowBox[{"Interval", "[", 
+           RowBox[{"{", 
+            RowBox[{"0", ",", " ", "0"}], "}"}], "]"}]}], ",", "\n", "   ", 
+         RowBox[{"sumHInfinity", " ", "=", " ", 
+          RowBox[{"Interval", "[", 
+           RowBox[{"{", 
+            RowBox[{"0", ",", " ", "0"}], "}"}], "]"}]}], ",", " ", 
+         RowBox[{"sumK", " ", "=", " ", 
+          RowBox[{"Interval", "[", 
+           RowBox[{"{", 
+            RowBox[{"0", ",", " ", "0"}], "}"}], "]"}]}], ",", "\n", "   ", 
+         "lo", ",", " ", "hi", ",", " ", "width", ",", " ", "kUpper", ",", 
+         " ", "hUpper", ",", " ", "cellUpper", ",", " ", "sumUpper", ",", " ",
+          "i0", ",", " ", "i1", ",", " ", "j0", ",", "\n", "   ", 
+         RowBox[{"tail", " ", "=", " ", 
+          RowBox[{"1", "/", "100"}]}]}], "}"}], ",", "\n", "  ", 
+       RowBox[{
+        RowBox[{"If", "[", 
+         RowBox[{
+          RowBox[{"mesh", " ", "<", " ", "1"}], ",", "\n", "   ", 
+          RowBox[{"Return", "[", 
+           RowBox[{"Failure", "[", 
+            RowBox[{"\"\<BadMesh\>\"", ",", " ", 
+             RowBox[{"<|", 
+              
+              RowBox[{"\"\<Requirement\>\"", " ", "->", 
+               " ", "\"\<mesh>=1\>\""}], "|>"}]}], "]"}], "]"}]}], "]"}], ";",
+         "\n", "  ", 
+        RowBox[{"$MercaProgress", " ", "=", " ", "0."}], ";", "\n", "  ", 
+        RowBox[{"Do", "[", "\n", "   ", 
+         RowBox[{
+          RowBox[{
+           RowBox[{"$MercaProgress", " ", "=", " ", 
+            RowBox[{"N", "[", 
+             RowBox[{"j", " ", "+", " ", 
+              RowBox[{"cell", "/", "mesh"}]}], "]"}]}], ";", "\n", "   ", 
+           RowBox[{"lo", " ", "=", " ", 
+            RowBox[{"j", " ", "+", " ", 
+             RowBox[{"cell", "/", "mesh"}]}]}], ";", " ", 
+           RowBox[{"hi", " ", "=", " ", 
+            RowBox[{"j", " ", "+", " ", 
+             RowBox[{
+              RowBox[{"(", 
+               RowBox[{"cell", " ", "+", " ", "1"}], ")"}], "/", "mesh"}]}]}],
+            ";", "\n", "   ", 
+           RowBox[{"width", " ", "=", " ", 
+            RowBox[{"1", "/", "mesh"}]}], ";", "\n", "   ", 
+           RowBox[{"kUpper", " ", "=", " ", 
+            RowBox[{"KRectangleUpper", "[", 
+             RowBox[{"lo", ",", " ", "hi", ",", " ", "workingPrecision"}], 
+             "]"}]}], ";", "\n", "   ", 
+           RowBox[{"cellUpper", " ", "=", " ", 
+            RowBox[{"OutwardUpper", "[", "\n", "     ", 
+             RowBox[{
+              RowBox[{
+               RowBox[{"Interval", "[", 
+                RowBox[{"{", 
+                 RowBox[{"width", ",", " ", "width"}], "}"}], "]"}], " ", 
+               RowBox[{"Interval", "[", 
+                RowBox[{"{", 
+                 RowBox[{"kUpper", ",", " ", "kUpper"}], "}"}], "]"}]}], ",", 
+              "\n", "     ", "workingPrecision"}], "]"}]}], ";", "\n", "   ", 
+           RowBox[{"sumK", " ", "=", " ", 
+            RowBox[{"sumK", " ", "+", " ", 
+             RowBox[{"Interval", "[", 
+              RowBox[{"{", 
+               RowBox[{"0", ",", " ", "cellUpper"}], "}"}], "]"}]}]}], ";", 
+           "\n", "   ", 
+           RowBox[{"If", "[", 
+            RowBox[{
+             RowBox[{"j", " ", "<", " ", "5"}], ",", "\n", "    ", 
+             RowBox[{
+              RowBox[{"hUpper", " ", "=", " ", 
+               RowBox[{"H0RectangleUpper", "[", 
+                RowBox[{"hi", ",", " ", "workingPrecision"}], "]"}]}], ";", 
+              "\n", "    ", 
+              RowBox[{"cellUpper", " ", "=", " ", 
+               RowBox[{"OutwardUpper", "[", "\n", "      ", 
+                RowBox[{
+                 RowBox[{
+                  RowBox[{"Interval", "[", 
+                   RowBox[{"{", 
+                    RowBox[{"width", ",", " ", "width"}], "}"}], "]"}], " ", 
+                  RowBox[{"Interval", "[", 
+                   RowBox[{"{", 
+                    RowBox[{"kUpper", ",", " ", "kUpper"}], "}"}], "]"}], "\n",
+                   "       ", 
+                  RowBox[{"Interval", "[", 
+                   RowBox[{"{", 
+                    RowBox[{"hUpper", ",", " ", "hUpper"}], "}"}], "]"}]}], ",",
+                  " ", "workingPrecision"}], "]"}]}], ";", "\n", "    ", 
+              RowBox[{"sumH0", " ", "=", " ", 
+               RowBox[{"sumH0", " ", "+", " ", 
+                RowBox[{"Interval", "[", 
+                 RowBox[{"{", 
+                  RowBox[{"0", ",", " ", "cellUpper"}], "}"}], "]"}]}]}]}], ",",
+              "\n", "    ", 
+             RowBox[{
+              RowBox[{"hUpper", " ", "=", " ", 
+               RowBox[{"HInfinityRectangleUpper", "[", 
+                RowBox[{"lo", ",", " ", "hi", ",", " ", "workingPrecision"}], 
+                "]"}]}], ";", "\n", "    ", 
+              RowBox[{"cellUpper", " ", "=", " ", 
+               RowBox[{"OutwardUpper", "[", "\n", "      ", 
+                RowBox[{
+                 RowBox[{
+                  RowBox[{"Interval", "[", 
+                   RowBox[{"{", 
+                    RowBox[{"width", ",", " ", "width"}], "}"}], "]"}], " ", 
+                  RowBox[{"Interval", "[", 
+                   RowBox[{"{", 
+                    RowBox[{"kUpper", ",", " ", "kUpper"}], "}"}], "]"}], "\n",
+                   "       ", 
+                  RowBox[{"Interval", "[", 
+                   RowBox[{"{", 
+                    RowBox[{"hUpper", ",", " ", "hUpper"}], "}"}], "]"}]}], ",",
+                  " ", "workingPrecision"}], "]"}]}], ";", "\n", "    ", 
+              RowBox[{"sumHInfinity", " ", "=", " ", 
+               RowBox[{"sumHInfinity", " ", "+", " ", 
+                RowBox[{"Interval", "[", 
+                 RowBox[{"{", 
+                  RowBox[{"0", ",", " ", "cellUpper"}], "}"}], "]"}]}]}]}]}], 
+            "\n", "   ", "]"}]}], ",", "\n", "   ", 
+          RowBox[{"{", 
+           RowBox[{"j", ",", " ", "0", ",", " ", "39"}], "}"}], ",", " ", 
+          RowBox[{"{", 
+           RowBox[{"cell", ",", " ", "0", ",", " ", 
+            RowBox[{"mesh", " ", "-", " ", "1"}]}], "}"}]}], "\n", "  ", 
+         "]"}], ";", "\n", "  ", 
+        RowBox[{"$MercaProgress", " ", "=", " ", "40."}], ";", "\n", "  ", 
+        RowBox[{"sumUpper", " ", "=", " ", 
+         RowBox[{"IntervalAbsUpper", "[", "sumH0", "]"}]}], ";", "\n", "  ", 
+        RowBox[{"i0", " ", "=", " ", 
+         RowBox[{"OutwardUpper", "[", 
+          RowBox[{
+           RowBox[{"2", " ", 
+            RowBox[{
+             RowBox[{"Interval", "[", 
+              RowBox[{"{", 
+               RowBox[{"sumUpper", ",", " ", "sumUpper"}], "}"}], "]"}], "/", 
+             "Pi"}]}], ",", "\n", "    ", "workingPrecision"}], "]"}]}], ";", 
+        "\n", "  ", 
+        RowBox[{"sumUpper", " ", "=", " ", 
+         RowBox[{"IntervalAbsUpper", "[", "sumHInfinity", "]"}]}], ";", "\n", 
+        "  ", 
+        RowBox[{"i1", " ", "=", " ", 
+         RowBox[{"OutwardUpper", "[", 
+          RowBox[{
+           RowBox[{"2", " ", 
+            RowBox[{
+             RowBox[{"Interval", "[", 
+              RowBox[{"{", 
+               RowBox[{"sumUpper", ",", " ", "sumUpper"}], "}"}], "]"}], "/", 
+             "Pi"}]}], ",", "\n", "    ", "workingPrecision"}], "]"}]}], ";", 
+        "\n", "  ", 
+        RowBox[{"sumUpper", " ", "=", " ", 
+         RowBox[{"IntervalAbsUpper", "[", "sumK", "]"}]}], ";", "\n", "  ", 
+        RowBox[{"j0", " ", "=", " ", 
+         RowBox[{"OutwardUpper", "[", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"Interval", "[", 
+             RowBox[{"{", 
+              RowBox[{"sumUpper", ",", " ", "sumUpper"}], "}"}], "]"}], "/", 
+            "Pi"}], ",", "\n", "    ", "workingPrecision"}], "]"}]}], ";", 
+        "\n", "  ", 
+        RowBox[{"<|", 
+         RowBox[{
+          RowBox[{"\"\<WolframVersion\>\"", " ", "->", " ", "$Version"}], ",",
+           "\n", "    ", 
+          
+          RowBox[{"\"\<WorkingPrecision\>\"", " ", "->", " ", 
+           "workingPrecision"}], ",", "\n", "    ", 
+          RowBox[{"\"\<MeshPerUnitInterval\>\"", " ", "->", " ", "mesh"}], ",",
+           "\n", "    ", 
+          RowBox[{"\"\<Hurwitz0To5Upper\>\"", " ", "->", " ", "i0"}], ",", 
+          " ", 
+          RowBox[{"\"\<Hurwitz5To40Upper\>\"", " ", "->", " ", "i1"}], ",", 
+          "\n", "    ", 
+          RowBox[{"\"\<HurwitzTailUpper\>\"", " ", "->", " ", "tail"}], ",", 
+          " ", 
+          RowBox[{"\"\<K0To40Upper\>\"", " ", "->", " ", "j0"}], ",", "\n", 
+          "    ", 
+          RowBox[{"\"\<KTailUpper\>\"", " ", "->", " ", "tail"}], ",", "\n", 
+          "    ", 
+          
+          RowBox[{"\"\<CompactIntegralSafetyChecks\>\"", " ", "->", "\n", 
+           "      ", 
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"i0", " ", "<", " ", 
+              RowBox[{"23", "/", "20"}]}], ",", " ", 
+             RowBox[{"i1", " ", "<", " ", 
+              RowBox[{"7", "/", "50"}]}], ",", " ", 
+             RowBox[{"j0", " ", "<", " ", 
+              RowBox[{"37", "/", "50"}]}]}], "}"}]}], ",", "\n", "    ", 
+          RowBox[{"\"\<AnalyticTailChecks\>\"", " ", "->", " ", 
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"tail", " ", "<=", " ", 
+              RowBox[{"1", "/", "100"}]}], ",", " ", 
+             RowBox[{"tail", " ", "<=", " ", 
+              RowBox[{"1", "/", "100"}]}]}], "}"}]}], ",", "\n", "    ", 
+          RowBox[{"\"\<AllSafetyChecks\>\"", " ", "->", "\n", "      ", 
+           RowBox[{"And", "[", 
+            RowBox[{
+             RowBox[{"i0", " ", "<", " ", 
+              RowBox[{"23", "/", "20"}]}], ",", " ", 
+             RowBox[{"i1", " ", "<", " ", 
+              RowBox[{"7", "/", "50"}]}], ",", " ", 
+             RowBox[{"j0", " ", "<", " ", 
+              RowBox[{"37", "/", "50"}]}], ",", "\n", "        ", 
+             RowBox[{"tail", " ", "<=", " ", 
+              RowBox[{"1", "/", "100"}]}]}], "]"}]}]}], "|>"}]}]}], "\n", " ",
+       "]"}]}], ";"}]}]}]], "Input",
+ CellChangeTimes->{{3.996525714112196*^9, 3.996525751266758*^9}},
+ CellLabel->
+  "In[143]:=",ExpressionUUID->"78b6e1ce-b9c2-b848-ba4c-8ba7febccca0"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"MercaAnalyticScales", "[", "12", "]"}], " ", "//", " ", 
+  "Dataset"}], "\n", 
+ RowBox[{
+  RowBox[{"RootScaleEndpointChecks", "[", "]"}], " ", "//", " ", 
+  "Dataset"}]}], "Input",
+ CellLabel->
+  "In[157]:=",ExpressionUUID->"bbf60f9a-e833-394a-af34-23d3db56ed71"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"$MercaProgress", " ", "=", " ", "0."}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"elapsedSeconds", ",", " ", "certificate"}], "}"}], " ", "=", " ", 
+   RowBox[{"Monitor", "[", "\n", "  ", 
+    RowBox[{
+     RowBox[{"AbsoluteTiming", "[", 
+      RowBox[{"MellinMajorantCheck", "[", 
+       RowBox[{"2048", ",", " ", "70"}], "]"}], "]"}], ",", "\n", "  ", 
+     RowBox[{"Row", "[", 
+      RowBox[{"{", 
+       RowBox[{"\"\<Progress: \>\"", ",", " ", 
+        RowBox[{"ProgressIndicator", "[", 
+         RowBox[{"$MercaProgress", ",", " ", 
+          RowBox[{"{", 
+           RowBox[{"0", ",", " ", "40"}], "}"}]}], "]"}], ",", "\n", 
+        "    ", "\"\<  \>\"", ",", " ", 
+        RowBox[{"NumberForm", "[", 
+         RowBox[{"$MercaProgress", ",", " ", 
+          RowBox[{"{", 
+           RowBox[{"4", ",", " ", "1"}], "}"}]}], "]"}], ",", 
+        " ", "\"\</40\>\""}], "}"}], "]"}]}], "\n", "]"}]}], ";"}], "\n", 
+ RowBox[{"certificate", " ", "//", " ", "Dataset"}]}], "Input",
+ CellTags->"RunCertificate",
+ CellLabel->
+  "In[159]:=",ExpressionUUID->"9aa9786a-1c86-e647-b8ee-0af4e8f58f2c"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["4. Chapter 6: assemble the final explicit threshold", "Section",ExpressionUUID->"f0528f41-6aeb-8546-9777-bc7efaf43433"],
+
+Cell["\<\
+The 22-field report combines n_b, N_b, the analytic scales and N_b^*. The \
+field N0 is the shifted sufficient threshold delta0+NbStar. \
+NormalizedThreshold and GeneralThreshold give the reduced and gcd-rescaled \
+thresholds. The last input cell exports the summary PDF beside this notebook.\
+\>", "Text",ExpressionUUID->"77d282f5-19f9-3149-937a-150d62ef4540"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", "\n", "  ", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"Chapter", " ", "6"}], ":", " ", 
+     RowBox[{
+     "combine", " ", "the", " ", "finite", " ", "data", " ", "n_b", " ", 
+      "and", " ", "N_b"}]}], ",", " ", 
+    RowBox[{"the", " ", "tail", " ", "scales"}], ",", " ", 
+    RowBox[{
+     RowBox[{"and", " ", 
+      RowBox[{"N_b", "^"}], "*", 
+      RowBox[{".", " ", "The"}], " ", "shifted", " ", "sufficient", " ", 
+      "threshold", " ", "is", " ", "N0"}], "=", 
+     RowBox[{"delta0", "+", 
+      RowBox[{
+       RowBox[{"NbStar", ".", " ", "The"}], " ", "general"}], "-", 
+      RowBox[{
+      "residue", " ", "envelope", " ", "need", " ", "not", " ", "give", " ", 
+       "the", " ", "smallest", " ", 
+       RowBox[{"threshold", "."}]}]}]}]}], "\n", "*)"}], "\n", 
+  RowBox[{
+   RowBox[{
+    RowBox[{
+     RowBox[{"MercaReport", "[", 
+      RowBox[{"system_Association", ",", " ", 
+       RowBox[{"verifyExtra_Integer", " ", ":", " ", "0"}]}], "]"}], " ", ":=",
+      "\n", " ", 
+     RowBox[{"Module", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+        "extrema", ",", " ", "negative", ",", " ", "scales", ",", " ", 
+         "gamma", ",", " ", "convK", ",", " ", "nbStar", ",", " ", "delta0", ",",
+          "\n", "   ", "testValues", ",", " ", "verification"}], "}"}], ",", 
+       "\n", "  ", 
+       RowBox[{
+        RowBox[{"If", "[", 
+         RowBox[{
+          RowBox[{
+           RowBox[{"system", "[", "\"\<r\>\"", "]"}], " ", "==", " ", "3"}], ",",
+           "\n", "   ", 
+          RowBox[{"Return", "[", 
+           RowBox[{"Failure", "[", 
+            
+            RowBox[{"\"\<ModulusThreeHandledTheoretically\>\"", ",", "\n", 
+             "     ", 
+             RowBox[{"<|", 
+              
+              RowBox[{"\"\<Explanation\>\"", " ", "->", "\n", 
+               "       ", "\"\<The normalized (r,s)=(3,1) case is supplied by \
+the cited result and needs no analytic report.\>\""}], "|>"}]}], "]"}], 
+           "]"}]}], "\n", "  ", "]"}], ";", "\n", "  ", 
+        RowBox[{"extrema", " ", "=", " ", 
+         RowBox[{"system", "[", "\"\<Extrema\>\"", "]"}]}], ";", "\n", "  ", 
+        RowBox[{"testValues", " ", "=", " ", 
+         RowBox[{"Map", "[", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"FullSimplify", "[", 
+             RowBox[{"#", " ", "/.", " ", 
+              RowBox[{"p", " ", "->", " ", 
+               RowBox[{"system", "[", "\"\<P0\>\"", "]"}]}]}], "]"}], " ", 
+            "&"}], ",", "\n", "    ", 
+           RowBox[{"system", "[", "\"\<Tests\>\"", "]"}]}], "]"}]}], ";", 
+        "\n", "  ", 
+        RowBox[{"If", "[", 
+         RowBox[{
+          RowBox[{
+           RowBox[{"system", "[", "\"\<r\>\"", "]"}], " ", ">=", " ", "4"}], ",",
+           "\n", "   ", 
+          RowBox[{
+           RowBox[{"negative", " ", "=", " ", 
+            RowBox[{"FiniteNegativeData", "[", "system", "]"}]}], ";", "\n", 
+           "   ", 
+           RowBox[{"scales", " ", "=", " ", 
+            RowBox[{"MercaAnalyticScales", "[", 
+             RowBox[{"system", "[", "\"\<r\>\"", "]"}], "]"}]}], ";", "\n", 
+           "   ", 
+           RowBox[{"gamma", " ", "=", " ", 
+            RowBox[{"If", "[", 
+             RowBox[{
+              RowBox[{
+               RowBox[{"system", "[", "\"\<Family\>\"", "]"}], " ", "==", 
+               " ", "\"\<four-part\>\""}], ",", " ", 
+              RowBox[{"11", "/", "4"}], ",", " ", 
+              RowBox[{"9", "/", "4"}]}], "]"}]}], ";", "\n", "   ", 
+           RowBox[{"convK", " ", "=", " ", 
+            RowBox[{"ConvolutionConstant", "[", 
+             RowBox[{
+              RowBox[{"system", "[", "\"\<r\>\"", "]"}], ",", " ", "gamma"}], 
+             "]"}]}], ";", "\n", "   ", 
+           RowBox[{"nbStar", " ", "=", " ", 
+            RowBox[{"Max", "[", "\n", "     ", 
+             RowBox[{"16", ",", " ", 
+              RowBox[{"4", " ", 
+               RowBox[{
+                RowBox[{"system", "[", "\"\<nb\>\"", "]"}], "^", "2"}]}], ",",
+               " ", 
+              RowBox[{"2", " ", 
+               RowBox[{"scales", "[", "\"\<Tp\>\"", "]"}]}], ",", "\n", 
+              "     ", 
+              RowBox[{
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{"convK", " ", 
+                  RowBox[{"negative", "[", "\"\<Nb\>\"", "]"}]}], " ", "+", 
+                 " ", "1"}], ")"}], "^", "2"}]}], "\n", "    ", "]"}]}], ";", 
+           "\n", "   ", 
+           RowBox[{"delta0", " ", "=", " ", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"system", "[", "\"\<r\>\"", "]"}], " ", 
+              RowBox[{"system", "[", "\"\<k\>\"", "]"}], " ", 
+              RowBox[{
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{"system", "[", "\"\<k\>\"", "]"}], " ", "+", " ", 
+                 "1"}], ")"}], "/", "2"}]}], " ", "-", "\n", "     ", 
+             RowBox[{
+              RowBox[{"system", "[", "\"\<s\>\"", "]"}], " ", 
+              RowBox[{"system", "[", "\"\<k\>\"", "]"}]}]}]}]}], ",", "\n", 
+          "   ", 
+          RowBox[{
+           RowBox[{"negative", " ", "=", " ", 
+            RowBox[{"<|", 
+             RowBox[{
+              RowBox[{"\"\<Nb\>\"", " ", "->", " ", "0"}], ",", " ", 
+              RowBox[{"\"\<NegativeCoefficients\>\"", " ", "->", " ", 
+               RowBox[{"{", "}"}]}]}], "|>"}]}], ";", "\n", "   ", 
+           RowBox[{"scales", " ", "=", " ", 
+            RowBox[{"<|", "|>"}]}], ";", " ", 
+           RowBox[{"gamma", " ", "=", " ", 
+            RowBox[{"Missing", "[", "\"\<NotApplicable\>\"", "]"}]}], ";", 
+           "\n", "   ", 
+           RowBox[{"convK", " ", "=", " ", 
+            RowBox[{"Missing", "[", "\"\<NotApplicable\>\"", "]"}]}], ";", 
+           "\n", "   ", 
+           RowBox[{"nbStar", " ", "=", " ", 
+            RowBox[{"Missing", "[", "\"\<NotApplicable\>\"", "]"}]}], ";", 
+           "\n", "   ", 
+           RowBox[{"delta0", " ", "=", " ", 
+            RowBox[{
+             RowBox[{"system", "[", "\"\<k\>\"", "]"}], "^", "2"}]}]}]}], 
+         "\n", "  ", "]"}], ";", "\n", "  ", 
+        RowBox[{"verification", " ", "=", " ", 
+         RowBox[{"If", "[", 
+          RowBox[{
+           RowBox[{"verifyExtra", " ", ">", " ", "0"}], ",", " ", 
+           RowBox[{"VerifySystem", "[", 
+            RowBox[{"system", ",", " ", "verifyExtra"}], "]"}], ",", "\n", 
+           "    ", 
+           RowBox[{"Missing", "[", "\"\<NotRequested\>\"", "]"}]}], "]"}]}], ";",
+         "\n", "  ", 
+        RowBox[{"<|", "\n", "   ", 
+         RowBox[{
+          RowBox[{"\"\<Family\>\"", " ", "->", " ", 
+           RowBox[{"system", "[", "\"\<Family\>\"", "]"}]}], ",", "\n", "   ", 
+          RowBox[{"\"\<EnvelopeMode\>\"", " ", "->", " ", 
+           RowBox[{"extrema", "[", "\"\<EnvelopeMode\>\"", "]"}]}], ",", "\n",
+           "   ", 
+          RowBox[{"\"\<Parameters\>\"", " ", "->", " ", 
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"system", "[", "\"\<r\>\"", "]"}], ",", " ", 
+             RowBox[{"system", "[", "\"\<s\>\"", "]"}], ",", " ", 
+             RowBox[{"system", "[", "\"\<k\>\"", "]"}]}], "}"}]}], ",", "\n", 
+          "   ", 
+          RowBox[{"\"\<Parts\>\"", " ", "->", " ", 
+           RowBox[{"extrema", "[", "\"\<Parts\>\"", "]"}]}], ",", " ", 
+          RowBox[{"\"\<Period\>\"", " ", "->", " ", 
+           RowBox[{"extrema", "[", "\"\<Period\>\"", "]"}]}], ",", "\n", 
+          "   ", 
+          RowBox[{"\"\<Kappa\>\"", " ", "->", " ", 
+           RowBox[{"extrema", "[", "\"\<Kappa\>\"", "]"}]}], ",", "\n", "   ", 
+          RowBox[{"\"\<ResidueRadius\>\"", " ", "->", " ", 
+           RowBox[{"extrema", "[", "\"\<ResidueRadius\>\"", "]"}]}], ",", 
+          "\n", "   ", 
+          RowBox[{"\"\<EpsilonMin\>\"", " ", "->", " ", 
+           RowBox[{"extrema", "[", "\"\<EpsilonMin\>\"", "]"}]}], ",", "\n", 
+          "   ", 
+          RowBox[{"\"\<EpsilonMax\>\"", " ", "->", " ", 
+           RowBox[{"extrema", "[", "\"\<EpsilonMax\>\"", "]"}]}], ",", "\n", 
+          "   ", 
+          RowBox[{"\"\<Oscillation\>\"", " ", "->", " ", 
+           RowBox[{"extrema", "[", "\"\<Oscillation\>\"", "]"}]}], ",", "\n", 
+          "   ", 
+          RowBox[{"\"\<P0\>\"", " ", "->", " ", 
+           RowBox[{"system", "[", "\"\<P0\>\"", "]"}]}], ",", " ", 
+          RowBox[{"\"\<nb\>\"", " ", "->", " ", 
+           RowBox[{"system", "[", "\"\<nb\>\"", "]"}]}], ",", "\n", "   ", 
+          RowBox[{"\"\<TestValuesAtP0\>\"", " ", "->", " ", "testValues"}], ",",
+           "\n", "   ", 
+          RowBox[{"\"\<Nb\>\"", " ", "->", " ", 
+           RowBox[{"negative", "[", "\"\<Nb\>\"", "]"}]}], ",", "\n", "   ", 
+          RowBox[{"\"\<NegativeCoefficients\>\"", " ", "->", " ", 
+           RowBox[{"negative", "[", "\"\<NegativeCoefficients\>\"", "]"}]}], ",",
+           "\n", "   ", 
+          RowBox[{"\"\<AnalyticScales\>\"", " ", "->", " ", "scales"}], ",", 
+          " ", 
+          RowBox[{"\"\<Gamma\>\"", " ", "->", " ", "gamma"}], ",", "\n", 
+          "   ", 
+          RowBox[{"\"\<K\>\"", " ", "->", " ", "convK"}], ",", " ", 
+          RowBox[{"\"\<NbStar\>\"", " ", "->", " ", "nbStar"}], ",", "\n", 
+          "   ", 
+          RowBox[{"\"\<delta0\>\"", " ", "->", " ", "delta0"}], ",", "\n", 
+          "   ", 
+          RowBox[{"\"\<N0\>\"", " ", "->", " ", 
+           RowBox[{"If", "[", 
+            RowBox[{
+             RowBox[{"IntegerQ", "[", "nbStar", "]"}], ",", " ", 
+             RowBox[{"delta0", " ", "+", " ", "nbStar"}], ",", "\n", "     ", 
+             RowBox[{"Missing", "[", "\"\<NotApplicable\>\"", "]"}]}], 
+            "]"}]}], ",", "\n", "   ", 
+          RowBox[{"\"\<Verification\>\"", " ", "->", " ", "verification"}]}], 
+         "\n", "  ", "|>"}]}]}], "\n", " ", "]"}]}], ";"}], "\n", "\n", 
+   RowBox[{"(*", "\n", "  ", 
+    RowBox[{
+     RowBox[{
+     "Optional", " ", "direct", " ", "coefficient", " ", "check", " ", "at", " ",
+       "and", " ", "after", " ", "n_b"}], ";", " ", 
+     RowBox[{
+     "this", " ", "is", " ", "a", " ", "diagnostic", " ", "in", " ", 
+      "addition", " ", "to", " ", "the", " ", "exact", " ", "polynomial", " ", 
+      RowBox[{"proof", "."}]}]}], "\n", "*)"}], "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"VerifySystem", "[", 
+      RowBox[{"system_Association", ",", " ", 
+       RowBox[{"extra_Integer", "?", "NonNegative"}]}], "]"}], " ", ":=", 
+     "\n", " ", 
+     RowBox[{"Module", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{"limit", ",", " ", "values", ",", " ", "failures"}], "}"}], ",",
+        "\n", "  ", 
+       RowBox[{
+        RowBox[{"limit", " ", "=", " ", 
+         RowBox[{
+          RowBox[{"system", "[", "\"\<nb\>\"", "]"}], " ", "+", " ", 
+          "extra"}]}], ";", "\n", "  ", 
+        RowBox[{"values", " ", "=", " ", 
+         RowBox[{"TransformedCoefficients", "[", 
+          RowBox[{"system", ",", " ", "limit"}], "]"}]}], ";", "\n", "  ", 
+        RowBox[{"failures", " ", "=", " ", 
+         RowBox[{"Select", "[", "\n", "    ", 
+          RowBox[{
+           RowBox[{"Table", "[", 
+            RowBox[{
+             RowBox[{"{", 
+              RowBox[{"degree", ",", " ", 
+               RowBox[{"values", "[", 
+                RowBox[{"[", 
+                 RowBox[{"degree", " ", "+", " ", "1"}], "]"}], "]"}]}], 
+              "}"}], ",", "\n", "      ", 
+             RowBox[{"{", 
+              RowBox[{"degree", ",", " ", 
+               RowBox[{"system", "[", "\"\<nb\>\"", "]"}], ",", " ", 
+               "limit"}], "}"}]}], "]"}], ",", "\n", "    ", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"Last", "[", "#", "]"}], " ", "<=", " ", "0"}], " ", 
+            "&"}]}], "\n", "   ", "]"}]}], ";", "\n", "  ", 
+        RowBox[{"<|", 
+         RowBox[{
+          RowBox[{"\"\<CheckedRange\>\"", " ", "->", " ", 
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"system", "[", "\"\<nb\>\"", "]"}], ",", " ", "limit"}], 
+            "}"}]}], ",", "\n", "    ", 
+          RowBox[{"\"\<StrictlyPositive\>\"", " ", "->", " ", 
+           RowBox[{"(", 
+            RowBox[{"failures", " ", "===", " ", 
+             RowBox[{"{", "}"}]}], ")"}]}], ",", " ", 
+          RowBox[{"\"\<Failures\>\"", " ", "->", " ", "failures"}]}], 
+         "|>"}]}]}], "\n", " ", "]"}]}], ";"}], "\n", "\n", 
+   RowBox[{"(*", "\n", "  ", 
+    RowBox[{
+    "The", " ", "final", " ", "helpers", " ", "implement", " ", "the", " ", 
+     "normalized", " ", "threshold", " ", "and", " ", "the", " ", "gcd", " ", 
+     "rescaling", " ", "N", 
+     RowBox[{
+      RowBox[{"(", 
+       RowBox[{"R", ",", "S", ",", "k"}], ")"}], "."}]}], "\n", "*)"}], "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"NormalizedThreshold", "[", 
+      RowBox[{
+      "r_Integer", ",", " ", "s_Integer", ",", " ", "k_Integer", ",", "\n", 
+       "   ", 
+       RowBox[{"verifyExtra_Integer", " ", ":", " ", "0"}]}], "]"}], " ", ":=",
+      "\n", " ", 
+     RowBox[{"Which", "[", "\n", "  ", 
+      RowBox[{
+       RowBox[{"k", " ", "<", " ", "1"}], ",", "\n", "   ", 
+       RowBox[{"Failure", "[", 
+        RowBox[{"\"\<BadParameters\>\"", ",", " ", 
+         RowBox[{"<|", 
+          RowBox[{"\"\<Requirement\>\"", " ", "->", " ", "\"\<k>=1\>\""}], 
+          "|>"}]}], "]"}], ",", "\n", "  ", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{
+          RowBox[{"r", " ", "==", " ", "2"}], " ", "&&", " ", 
+          RowBox[{"s", " ", "==", " ", "1"}]}], ")"}], " ", "||", " ", 
+        RowBox[{"(", 
+         RowBox[{
+          RowBox[{"r", " ", "==", " ", "3"}], " ", "&&", " ", 
+          RowBox[{"s", " ", "==", " ", "1"}]}], ")"}]}], ",", " ", "0", ",", 
+       "\n", "  ", 
+       RowBox[{"r", " ", ">=", " ", "4"}], ",", "\n", "   ", 
+       RowBox[{"Module", "[", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"system", " ", "=", " ", 
+            RowBox[{"MercaSystem", "[", 
+             RowBox[{"r", ",", " ", "s", ",", " ", "k"}], "]"}]}], ",", " ", 
+           "report"}], "}"}], ",", "\n", "    ", 
+         RowBox[{
+          RowBox[{"If", "[", 
+           RowBox[{
+            RowBox[{"FailureQ", "[", "system", "]"}], ",", " ", 
+            RowBox[{"Return", "[", "system", "]"}]}], "]"}], ";", "\n", 
+          "    ", 
+          RowBox[{"report", " ", "=", " ", 
+           RowBox[{"MercaReport", "[", 
+            RowBox[{"system", ",", " ", "verifyExtra"}], "]"}]}], ";", "\n", 
+          "    ", 
+          RowBox[{"If", "[", 
+           RowBox[{
+            RowBox[{"FailureQ", "[", "report", "]"}], ",", " ", "report", ",",
+             " ", 
+            RowBox[{"report", "[", "\"\<N0\>\"", "]"}]}], "]"}]}]}], "\n", 
+        "   ", "]"}], ",", "\n", "  ", "True", ",", "\n", "   ", 
+       RowBox[{"Failure", "[", 
+        RowBox[{"\"\<BadParameters\>\"", ",", "\n", "    ", 
+         RowBox[{"<|", 
+          
+          RowBox[{"\"\<Requirement\>\"", " ", "->", "\n", 
+           "      ", "\"\<normalized gcd(r,s)=1 with 1<=s<=r/2\>\""}], 
+          "|>"}]}], "]"}]}], "\n", " ", "]"}]}], ";"}], "\n", "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"GeneralThreshold", "[", 
+      RowBox[{
+      "R_Integer", ",", " ", "S_Integer", ",", " ", "k_Integer", ",", "\n", 
+       "   ", 
+       RowBox[{"verifyExtra_Integer", " ", ":", " ", "0"}]}], "]"}], " ", ":=",
+      "\n", " ", 
+     RowBox[{"Module", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{"d", ",", " ", "r", ",", " ", "s", ",", " ", "normalized"}], 
+        "}"}], ",", "\n", "  ", 
+       RowBox[{
+        RowBox[{"If", "[", 
+         RowBox[{
+          RowBox[{"!", 
+           RowBox[{"(", 
+            RowBox[{
+             RowBox[{"R", " ", ">=", " ", "2"}], " ", "&&", " ", 
+             RowBox[{"1", " ", "<=", " ", "S", " ", "<=", " ", 
+              RowBox[{"R", "/", "2"}]}], " ", "&&", " ", 
+             RowBox[{"k", " ", ">=", " ", "1"}]}], ")"}]}], ",", "\n", "   ", 
+          RowBox[{"Return", "[", 
+           RowBox[{"Failure", "[", 
+            RowBox[{"\"\<BadParameters\>\"", ",", "\n", "     ", 
+             RowBox[{"<|", 
+              
+              RowBox[{"\"\<Requirement\>\"", " ", "->", 
+               " ", "\"\<R>=2, 1<=S<=R/2, k>=1\>\""}], "|>"}]}], "]"}], 
+           "]"}]}], "]"}], ";", "\n", "  ", 
+        RowBox[{"d", " ", "=", " ", 
+         RowBox[{"GCD", "[", 
+          RowBox[{"R", ",", " ", "S"}], "]"}]}], ";", " ", 
+        RowBox[{"r", " ", "=", " ", 
+         RowBox[{"R", "/", "d"}]}], ";", " ", 
+        RowBox[{"s", " ", "=", " ", 
+         RowBox[{"S", "/", "d"}]}], ";", "\n", "  ", 
+        RowBox[{"normalized", " ", "=", " ", 
+         RowBox[{"NormalizedThreshold", "[", 
+          RowBox[{
+          "r", ",", " ", "s", ",", " ", "k", ",", " ", "verifyExtra"}], 
+          "]"}]}], ";", "\n", "  ", 
+        RowBox[{"If", "[", 
+         RowBox[{
+          RowBox[{"FailureQ", "[", "normalized", "]"}], ",", " ", 
+          "normalized", ",", " ", 
+          RowBox[{"d", " ", "normalized"}]}], "]"}]}]}], "\n", " ", "]"}]}], 
+    ";"}], "\n", "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"FullVerificationView", "[", 
+      RowBox[{
+      "finite_", ",", " ", "closedChecks_", ",", " ", "rootCheck_", ",", " ", 
+       "mellin_", ",", " ", "elapsed_"}], "]"}], " ", ":=", "\n", " ", 
+     RowBox[{"Column", "[", 
+      RowBox[{
+       RowBox[{"{", "\n", "   ", 
+        RowBox[{
+         RowBox[{"Style", "[", 
+          
+          RowBox[{"\"\<Full-manuscript Mathematica verification for the \
+manuscript\>\"", ",", " ", "18", ",", " ", "Bold"}], "]"}], ",", "\n", "   ", 
+         RowBox[{"Grid", "[", 
+          RowBox[{
+           RowBox[{"{", "\n", "     ", 
+            RowBox[{
+             RowBox[{"{", 
+              RowBox[{"\"\<Example parameters (r,s,k)\>\"", ",", " ", 
+               RowBox[{"finite", "[", "\"\<Parameters\>\"", "]"}]}], "}"}], ",",
+              "\n", "     ", 
+             RowBox[{"{", 
+              RowBox[{"\"\<Chapters 2-3 closed-form checks\>\"", ",", " ", 
+               RowBox[{"closedChecks", "[", "\"\<AllChecks\>\"", "]"}]}], 
+              "}"}], ",", "\n", "     ", 
+             RowBox[{"{", 
+              
+              RowBox[{"\"\<Maximum error in the root-of-unity sum\>\"", ",", 
+               " ", 
+               RowBox[{"rootCheck", "[", "\"\<MaxAbsoluteError\>\"", "]"}]}], 
+              "}"}], ",", "\n", "     ", 
+             RowBox[{"{", 
+              
+              RowBox[{"\"\<Chapters 3-4 finite-factor selection\>\"", ",", 
+               " ", 
+               RowBox[{"finite", "[", "\"\<Family\>\"", "]"}]}], "}"}], ",", 
+             "\n", "     ", 
+             RowBox[{"{", 
+              RowBox[{"\"\<p0 and n_b\>\"", ",", " ", 
+               RowBox[{"{", 
+                RowBox[{
+                 RowBox[{"finite", "[", "\"\<P0\>\"", "]"}], ",", " ", 
+                 RowBox[{"finite", "[", "\"\<nb\>\"", "]"}]}], "}"}]}], "}"}],
+              ",", "\n", "     ", 
+             RowBox[{"{", 
+              RowBox[{"\"\<Negative mass N_b\>\"", ",", " ", 
+               RowBox[{"finite", "[", "\"\<Nb\>\"", "]"}]}], "}"}], ",", "\n",
+              "     ", 
+             RowBox[{"{", 
+              RowBox[{"\"\<Direct check at and after n_b\>\"", ",", " ", 
+               RowBox[{"finite", "[", "\"\<Verification\>\"", "]"}]}], "}"}], 
+             ",", "\n", "     ", 
+             RowBox[{"{", 
+              RowBox[{"\"\<Chapter 6 Xp and Tp\>\"", ",", "\n", "       ", 
+               RowBox[{"{", 
+                RowBox[{
+                 RowBox[{
+                  RowBox[{"finite", "[", "\"\<AnalyticScales\>\"", "]"}], 
+                  "[", "\"\<Xp\>\"", "]"}], ",", " ", 
+                 RowBox[{
+                  RowBox[{"finite", "[", "\"\<AnalyticScales\>\"", "]"}], 
+                  "[", "\"\<Tp\>\"", "]"}]}], "}"}]}], "}"}], ",", "\n", 
+             "     ", 
+             RowBox[{"{", 
+              
+              RowBox[{"\"\<Three compact-integral upper bounds\>\"", ",", 
+               "\n", "       ", 
+               RowBox[{"N", "[", 
+                RowBox[{
+                 RowBox[{"{", 
+                  RowBox[{
+                   RowBox[{"mellin", "[", "\"\<Hurwitz0To5Upper\>\"", "]"}], ",",
+                    " ", 
+                   RowBox[{"mellin", "[", "\"\<Hurwitz5To40Upper\>\"", "]"}], 
+                   ",", "\n", "          ", 
+                   RowBox[{"mellin", "[", "\"\<K0To40Upper\>\"", "]"}]}], 
+                  "}"}], ",", " ", "18"}], "]"}]}], "}"}], ",", "\n", "     ", 
+             RowBox[{"{", 
+              
+              RowBox[{"\"\<Mellin checks with analytic tail input\>\"", ",", 
+               " ", 
+               RowBox[{"mellin", "[", "\"\<AllSafetyChecks\>\"", "]"}]}], 
+              "}"}], ",", "\n", "     ", 
+             RowBox[{"{", 
+              RowBox[{"\"\<Chapter 6 sufficient normalized N_0\>\"", ",", " ", 
+               RowBox[{"finite", "[", "\"\<N0\>\"", "]"}]}], "}"}], ",", "\n",
+              "     ", 
+             RowBox[{"{", 
+              RowBox[{"\"\<Mellin elapsed seconds\>\"", ",", " ", "elapsed"}],
+               "}"}]}], "\n", "    ", "}"}], ",", " ", 
+           RowBox[{"Frame", " ", "->", " ", "All"}], ",", " ", 
+           RowBox[{"Alignment", " ", "->", " ", "Left"}], ",", " ", 
+           RowBox[{"Spacings", " ", "->", " ", 
+            RowBox[{"{", 
+             RowBox[{"2", ",", " ", "1"}], "}"}]}]}], "]"}]}], "\n", "  ", 
+        "}"}], ",", " ", 
+       RowBox[{"Spacings", " ", "->", " ", "1.2"}]}], "]"}]}], 
+    ";"}]}]}]], "Input",
+ CellChangeTimes->{{3.996306003744377*^9, 3.996306003886549*^9}},
+ CellLabel->
+  "In[162]:=",ExpressionUUID->"691ba3ce-991b-f24f-9046-e135b4b980cb"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"report1211", " ", "=", " ", 
+   RowBox[{"MercaReport", "[", 
+    RowBox[{"system1211", ",", " ", "200"}], "]"}]}], ";"}], "\n", 
+ RowBox[{"report1211", " ", "//", " ", "Dataset"}], "\n", 
+ RowBox[{"FullVerificationView", "[", "\n", "  ", 
+  RowBox[{
+  "report1211", ",", " ", "closedFormChecks", ",", " ", "rootOfUnityCheck", ",",
+    " ", "certificate", ",", " ", "elapsedSeconds"}], "]"}]}], "Input",
+ CellLabel->
+  "In[167]:=",ExpressionUUID->"1605efb9-8ee5-224c-9038-1a054e2ce3c9"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"outputDirectory", " ", "=", " ", 
+   RowBox[{"Quiet", "@", 
+    RowBox[{"Check", "[", 
+     RowBox[{
+      RowBox[{"NotebookDirectory", "[", "]"}], ",", " ", 
+      RowBox[{"Directory", "[", "]"}]}], "]"}]}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{"If", "[", 
+   RowBox[{
+    RowBox[{"!", " ", 
+     RowBox[{"StringQ", "[", "outputDirectory", "]"}]}], ",", " ", 
+    RowBox[{"outputDirectory", " ", "=", " ", 
+     RowBox[{"Directory", "[", "]"}]}]}], "]"}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{"reportPath", " ", "=", " ", 
+   RowBox[{"FileNameJoin", "[", 
+    RowBox[{"{", 
+     RowBox[{
+     "outputDirectory", ",", 
+      " ", "\"\<Merca_Full_Manuscript_Run_Results.pdf\>\""}], "}"}], "]"}]}], 
+  ";"}], "\n", 
+ RowBox[{
+  RowBox[{"Export", "[", 
+   RowBox[{"reportPath", ",", "\n", "  ", 
+    RowBox[{"FullVerificationView", "[", "\n", "    ", 
+     RowBox[{
+     "report1211", ",", " ", "closedFormChecks", ",", " ", "rootOfUnityCheck",
+       ",", " ", "certificate", ",", " ", "elapsedSeconds"}], "]"}], ",", 
+    "\n", "  ", "\"\<PDF\>\""}], "]"}], ";"}], "\n", "reportPath"}], "Input",
+ CellChangeTimes->{3.9965498758862953`*^9},
+ CellTags->"ExportPDF",ExpressionUUID->"258aec01-071f-bc4f-9f0a-865cce92a368"],
+
+Cell["\<\
+After a full run, check that closedFormChecks[\"AllChecks\"], \
+rootOfUnityCheck[\"Passed\"], certificate[\"AllSafetyChecks\"] and \
+report1211[\"Verification\"][\"StrictlyPositive\"] are True. The \
+root-of-unity check is numerical, and the Mellin tail bound is supplied by \
+the manuscript.\
+\>", "Text",ExpressionUUID->"5ea1446e-b457-654c-8852-d096f9101b2d"]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{1269, 726.5},
+WindowMargins->{{0, Automatic}, {Automatic, 0}},
+Magnification->1.03,
+FrontEndVersion->"14.2 for Microsoft Windows (64-bit) (2025\:5e743\:670814\
+\:65e5)",
+StyleDefinitions->"Default.nb",
+ExpressionUUID->"a504e51d-e315-cc41-baae-33254f1bf355"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{
+ "RunCertificate"->{
+  Cell[125668, 3014, 1151, 28, 228, "Input",ExpressionUUID->"9aa9786a-1c86-e647-b8ee-0af4e8f58f2c",
+   CellTags->"RunCertificate"]},
+ "ExportPDF"->{
+  Cell[149594, 3564, 1249, 32, 72, "Input",ExpressionUUID->"258aec01-071f-bc4f-9f0a-865cce92a368",
+   CellTags->"ExportPDF"]}
+ }
+*)
+(*CellTagsIndex
+CellTagsIndex->{
+ {"RunCertificate", 151635, 3621},
+ {"ExportPDF", 151784, 3624}
+ }
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[576, 22, 202, 3, 99, "Title",ExpressionUUID->"29699e8d-3591-4746-b643-7cd03fafd784"],
+Cell[781, 27, 124, 3, 53, "Subtitle",ExpressionUUID->"0c41fc14-265e-7e4c-87ad-f7f3de20fe3f"],
+Cell[908, 32, 307, 4, 57, "Text",ExpressionUUID->"e538200a-a48a-584f-ac16-a6a9216b679c"],
+Cell[CellGroupData[{
+Cell[1240, 40, 132, 0, 68, "Section",ExpressionUUID->"ae00f114-689c-8b41-b633-3901b29c2b14"],
+Cell[1375, 42, 305, 4, 57, "Text",ExpressionUUID->"dfbff8c1-cb4e-7748-8651-d96ad5d2ed9a"],
+Cell[1683, 48, 31823, 777, 4644, "Input",ExpressionUUID->"733643a2-58a7-074d-8b48-b3ab7c9ee353"],
+Cell[33509, 827, 542, 12, 119, "Input",ExpressionUUID->"4c68e910-7e38-3c4c-bced-dfdbaa70fea3"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[34088, 844, 121, 0, 68, "Section",ExpressionUUID->"804a0ff4-98be-d248-8ebd-2ec9828cb0d7"],
+Cell[34212, 846, 368, 5, 57, "Text",ExpressionUUID->"be78bde1-ce02-3149-8030-6571f6cfc3a1"],
+Cell[34583, 853, 53274, 1225, 7896, "Input",ExpressionUUID->"186781fe-ebfa-0e4b-9d72-6aa5f12b87e8"],
+Cell[87860, 2080, 940, 23, 172, "Input",ExpressionUUID->"1884bc91-ad55-4746-b92f-68c2a301a4bc"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[88837, 2108, 150, 2, 68, "Section",ExpressionUUID->"cd7175dc-4bff-404c-b515-9c9ed5c2042d"],
+Cell[88990, 2112, 330, 5, 57, "Text",ExpressionUUID->"93811f94-aa4c-da44-a5b2-aa37350b112b"],
+Cell[89323, 2119, 36040, 883, 4898, "Input",ExpressionUUID->"78b6e1ce-b9c2-b848-ba4c-8ba7febccca0"],
+Cell[125366, 3004, 299, 8, 80, "Input",ExpressionUUID->"bbf60f9a-e833-394a-af34-23d3db56ed71"],
+Cell[125668, 3014, 1151, 28, 228, "Input",ExpressionUUID->"9aa9786a-1c86-e647-b8ee-0af4e8f58f2c",
+ CellTags->"RunCertificate"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[126856, 3047, 125, 0, 68, "Section",ExpressionUUID->"f0528f41-6aeb-8546-9777-bc7efaf43433"],
+Cell[126984, 3049, 371, 5, 57, "Text",ExpressionUUID->"77d282f5-19f9-3149-937a-150d62ef4540"],
+Cell[127358, 3056, 21709, 493, 3181, "Input",ExpressionUUID->"691ba3ce-991b-f24f-9046-e135b4b980cb"],
+Cell[149070, 3551, 521, 11, 72, "Input",ExpressionUUID->"1605efb9-8ee5-224c-9038-1a054e2ce3c9"],
+Cell[149594, 3564, 1249, 32, 72, "Input",ExpressionUUID->"258aec01-071f-bc4f-9f0a-865cce92a368",
+ CellTags->"ExportPDF"],
+Cell[150846, 3598, 371, 6, 72, "Text",ExpressionUUID->"5ea1446e-b457-654c-8852-d096f9101b2d"]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)
+
